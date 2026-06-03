@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Terminal from './Terminal';
+import Dashboard from './Dashboard';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -168,6 +169,9 @@ export default function About() {
             </div>
           </div>
         </div>
+
+        {/* Interactive Venture Dashboard */}
+        <Dashboard />
       </div>
     </section>
   );
