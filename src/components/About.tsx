@@ -76,6 +76,7 @@ export default function About() {
       id="about"
       ref={sectionRef}
       className="about-section relative"
+      aria-label="About Muhammad Muneef"
       style={{
         zIndex: 1,
         background: 'rgba(23, 20, 18, 0.92)',

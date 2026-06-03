@@ -40,13 +40,13 @@ export default function App() {
       <Navigation />
 
       {/* Content sections scroll over the ink */}
-      <div className="relative" style={{ zIndex: 1 }}>
+      <main id="main-content" className="relative" style={{ zIndex: 1 }}>
         <Hero />
         <About />
         <Projects />
         <Blog />
         <Contact />
-      </div>
+      </main>
     </>
   );
 }

@@ -89,9 +89,11 @@ export default function Hero() {
 
   return (
     <section
+      id="hero"
       ref={sectionRef}
       className="relative flex items-center justify-center min-h-[100dvh] overflow-hidden"
       style={{ zIndex: 1 }}
+      aria-label="Hero introduction — Muhammad Muneef"
     >
       {/* Glow effects for advanced aesthetics */}
       <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] rounded-full bg-[#f97316]/10 blur-[100px] pointer-events-none" />
@@ -106,6 +108,11 @@ export default function Hero() {
       />
 
       <div className="relative text-center px-6 max-w-4xl mx-auto">
+        {/* SEO: Single h1 for the page — visually hidden, screen-reader accessible */}
+        <h1 className="sr-only">
+          Muhammad Muneef — 14-Year-Old Tech Entrepreneur, Developer & Debater from Kashmir
+        </h1>
+
         {/* First name with drip animation */}
         <div
           ref={headlineRef}
@@ -115,6 +122,7 @@ export default function Hero() {
             fontWeight: 700,
             fontSize: 'clamp(48px, 9vw, 110px)',
           }}
+          aria-hidden="true"
         >
           {renderChars('MUHAMMAD')}
         </div>
@@ -128,6 +136,7 @@ export default function Hero() {
             fontWeight: 600,
             fontSize: 'clamp(38px, 7.5vw, 90px)',
           }}
+          aria-hidden="true"
         >
           {renderChars('MUNEEF')}
         </div>

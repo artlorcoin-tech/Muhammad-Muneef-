@@ -1,0 +1,26 @@
+{
+  "name": "Muhammad Muneef — Tech Entrepreneur & Developer",
+  "short_name": "Muneef",
+  "description": "14-year-old tech entrepreneur, web developer, national debater, and founder of Artlor & Trust Finsure from Kashmir.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#f97316",
+  "orientation": "portrait-primary",
+  "categories": ["portfolio", "business", "technology"],
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -41,8 +41,18 @@ export default function Navigation() {
   };
 
   return (
+    <>
+    {/* Skip navigation link for accessibility */}
+    <a
+      href="#main-content"
+      className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[200] focus:bg-[#f97316] focus:text-[#0c0a09] focus:px-4 focus:py-2 focus:rounded focus:text-sm focus:font-bold"
+      style={{ fontFamily: "'Space Mono', monospace" }}
+    >
+      Skip to content
+    </a>
     <nav
       ref={navRef}
+      aria-label="Main navigation"
       className="fixed top-0 left-0 w-full z-[100] opacity-0 transition-all duration-300"
       style={{
         height: '64px',
@@ -85,7 +95,9 @@ export default function Navigation() {
         <button
           className="md:hidden flex flex-col gap-[5px] p-2"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
+          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-nav-menu"
         >
           <span
             className="block w-5 h-[1px] bg-[#fafaf9] transition-transform duration-300"
@@ -109,6 +121,8 @@ export default function Navigation() {
       {/* Mobile Menu Overlay */}
       {menuOpen && (
         <div
+          id="mobile-nav-menu"
+          role="menu"
           className="md:hidden fixed inset-0 top-[64px] flex flex-col items-center pt-16 gap-8"
           style={{ background: 'rgba(12, 10, 9, 0.95)', backdropFilter: 'blur(20px)' }}
         >
@@ -116,6 +130,7 @@ export default function Navigation() {
             <a
               key={link.label}
               href={link.href}
+              role="menuitem"
               onClick={(e) => handleClick(e, link.href)}
               className="text-[#a8a29e] hover:text-[#f97316] transition-colors duration-300 text-[14px] uppercase tracking-[0.08em]"
               style={{ fontFamily: "'Space Mono', monospace" }}
@@ -126,5 +141,6 @@ export default function Navigation() {
         </div>
       )}
     </nav>
+    </>
   );
 }

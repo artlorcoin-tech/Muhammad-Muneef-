@@ -11,6 +11,7 @@ const projects = [
     description: "An online platform bridging artists and art lovers. Kashmir's creative talent, global reach.",
     link: 'https://www.artlor.art',
     image: '/images/kashmir.jpg',
+    imageAlt: 'Scenic Kashmir valley landscape representing Artlor art marketplace — connecting Kashmiri artists with global art lovers',
   },
   {
     name: 'Trust Finsure Accounting',
@@ -18,6 +19,7 @@ const projects = [
     description: 'Simplifying accounting for individuals and businesses. Clean books, clear growth.',
     link: '#',
     image: '/images/architecture.jpg',
+    imageAlt: 'Modern architecture symbolizing structured financial services by Trust Finsure Accounting',
   },
 ];
 
@@ -81,6 +83,7 @@ export default function Projects() {
       id="projects"
       ref={sectionRef}
       className="relative"
+      aria-label="Projects and startups by Muhammad Muneef"
       style={{
         zIndex: 1,
         background: 'rgba(12, 10, 9, 0.95)',
@@ -140,7 +143,11 @@ export default function Projects() {
                 <div className="absolute inset-0 bg-gradient-to-t from-[#171412] to-transparent z-10 opacity-60" />
                 <img
                   src={project.image}
-                  alt={project.name}
+                  alt={project.imageAlt}
+                  width={640}
+                  height={400}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                   style={{ filter: 'grayscale(50%) contrast(1.1)' }}
                   onMouseEnter={(e) => {

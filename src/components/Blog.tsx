@@ -79,6 +79,7 @@ export default function Blog() {
       id="blog"
       ref={sectionRef}
       className="relative"
+      aria-label="Blog posts and essays"
       style={{
         zIndex: 1,
         background: 'rgba(23, 20, 18, 0.92)',
@@ -117,11 +118,12 @@ export default function Blog() {
         </div>
 
         {/* Blog cards */}
-        <div ref={cardsRef} className="mt-16 max-w-[800px]">
+        <div ref={cardsRef} className="mt-16 max-w-[800px]" role="list">
           {blogPosts.map((post, i) => (
-            <div
+            <article
               key={i}
               className="blog-card group flex items-center py-8 cursor-pointer transition-transform duration-300"
+              role="listitem"
               style={{
                 borderBottom:
                   i < blogPosts.length - 1
@@ -144,7 +146,7 @@ export default function Blog() {
                 className="text-[#78716c] text-[12px] uppercase shrink-0 w-[120px] hidden sm:block"
                 style={{ fontFamily: "'Space Mono', monospace" }}
               >
-                {post.date}
+                <time>{post.date}</time>
               </span>
 
               {/* Title */}
@@ -160,10 +162,10 @@ export default function Blog() {
               </h3>
 
               {/* Arrow */}
-              <span className="ml-auto text-[#a8a29e] text-[18px] group-hover:text-[#f97316] transition-colors duration-300">
+              <span className="ml-auto text-[#a8a29e] text-[18px] group-hover:text-[#f97316] transition-colors duration-300" aria-hidden="true">
                 &rarr;
               </span>
-            </div>
+            </article>
           ))}
         </div>
       </div>

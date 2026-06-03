@@ -49,6 +49,7 @@ export default function Contact() {
       id="contact"
       ref={sectionRef}
       className="relative"
+      aria-label="Contact Muhammad Muneef"
       style={{
         zIndex: 1,
         background: 'rgba(12, 10, 9, 0.95)',
@@ -103,28 +104,31 @@ export default function Contact() {
         </div>
 
         {/* Social links */}
-        <div className="mt-16 flex flex-wrap justify-center gap-10">
+        <nav className="mt-16 flex flex-wrap justify-center gap-10" aria-label="Social media links">
           {socialLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`Visit ${link.label.charAt(0) + link.label.slice(1).toLowerCase()} profile`}
               className="text-[#a8a29e] hover:text-[#f97316] transition-colors duration-300 text-[12px] uppercase tracking-[0.08em]"
               style={{ fontFamily: "'Space Mono', monospace" }}
             >
               {link.label}
             </a>
           ))}
-        </div>
+        </nav>
 
         {/* Footer */}
-        <p
-          className="mt-28 text-[#78716c] text-[11px] uppercase tracking-[0.06em]"
-          style={{ fontFamily: "'Space Mono', monospace" }}
-        >
-          &copy; 2026 Muhammad Muneef. Built with passion from Kashmir.
-        </p>
+        <footer className="mt-28">
+          <p
+            className="text-[#78716c] text-[11px] uppercase tracking-[0.06em]"
+            style={{ fontFamily: "'Space Mono', monospace" }}
+          >
+            &copy; 2026 Muhammad Muneef. Built with passion from Kashmir.
+          </p>
+        </footer>
       </div>
     </section>
   );
