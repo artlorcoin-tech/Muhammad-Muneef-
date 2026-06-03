@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { use3DTilt } from '../hooks/use3DTilt';
+import { playSound } from '../lib/sound';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -22,6 +24,94 @@ const projects = [
     imageAlt: 'Modern architecture symbolizing structured financial services by Trust Finsure Accounting',
   },
 ];
+
+interface ProjectCardProps {
+  project: typeof projects[0];
+  index: number;
+  onEnter: (el: HTMLDivElement | null) => void;
+}
+
+function ProjectCard({ project, onEnter }: ProjectCardProps) {
+  // Wrap card with 3D tilt hook
+  const cardRef = use3DTilt<HTMLDivElement>(6);
+
+  const handleClick = () => {
+    playSound('success');
+    if (project.link && project.link !== '#') {
+      window.open(project.link, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  return (
+    <div
+      ref={(el) => {
+        // Bind both refs: local tilt ref and parent stagger ref
+        (cardRef as any).current = el;
+        onEnter(el);
+      }}
+      className="group cursor-pointer rounded-xl overflow-hidden border border-[#fafaf9]/5 bg-[#171412]/60 backdrop-blur-md transition-all duration-500 hover:border-accent/30 relative interactive-item select-none"
+      style={{
+        transform: 'translateY(0)',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.4)',
+      }}
+      onClick={handleClick}
+      onMouseEnter={() => {
+        playSound('hover');
+      }}
+    >
+      {/* Image area */}
+      <div className="relative overflow-hidden" style={{ aspectRatio: '16/10' }}>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#171412] to-transparent z-10 opacity-60" />
+        <img
+          src={project.image}
+          alt={project.imageAlt}
+          width={640}
+          height={400}
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
+          style={{ filter: 'grayscale(50%) contrast(1.1)' }}
+          onMouseEnter={(e) => {
+            (e.target as HTMLElement).style.filter = 'grayscale(0%) contrast(1.1)';
+          }}
+          onMouseLeave={(e) => {
+            (e.target as HTMLElement).style.filter = 'grayscale(50%) contrast(1.1)';
+          }}
+        />
+      </div>
+
+      {/* Content area */}
+      <div className="p-8 relative">
+        <span
+          className="block text-accent text-[11px] uppercase tracking-[0.15em]"
+          style={{ fontFamily: "'Space Mono', monospace" }}
+        >
+          {project.category}
+        </span>
+        <h3
+          className="text-[#fafaf9] mt-2 group-hover:text-accent transition-colors duration-300"
+          style={{
+            fontFamily: "'Clash Display', sans-serif",
+            fontWeight: 600,
+            fontSize: '28px',
+          }}
+        >
+          {project.name}
+        </h3>
+        <p
+          className="mt-3 text-[#a8a29e] leading-[1.7] text-[15px]"
+          style={{ fontFamily: "'Inter', sans-serif" }}
+        >
+          {project.description}
+        </p>
+        <div className="mt-6 flex items-center gap-2 text-[#fafaf9] group-hover:text-accent transition-colors duration-300 text-[12px] font-bold uppercase tracking-[0.15em]" style={{ fontFamily: "'Space Mono', monospace" }}>
+          <span>VISIT SITE</span>
+          <span className="transform group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -94,7 +184,7 @@ export default function Projects() {
         {/* Header */}
         <div ref={headerRef}>
           <span
-            className="block text-[#f97316] text-[12px] uppercase tracking-[0.08em] mb-10"
+            className="block text-accent text-[12px] uppercase tracking-[0.08em] mb-10"
             style={{ fontFamily: "'Space Mono', monospace" }}
           >
             (002) PROJECTS
@@ -115,80 +205,14 @@ export default function Projects() {
         {/* Project grid */}
         <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-10">
           {projects.map((project, i) => (
-            <div
+            <ProjectCard
               key={project.name}
-              ref={(el) => { cardsRef.current[i] = el; }}
-              className="group cursor-pointer rounded-xl overflow-hidden border border-[#fafaf9]/5 bg-[#171412]/60 backdrop-blur-md transition-all duration-500 hover:border-[#f97316]/30"
-              style={{
-                transform: 'translateY(0)',
-                boxShadow: '0 4px 30px rgba(0, 0, 0, 0.4)',
+              project={project}
+              index={i}
+              onEnter={(el) => {
+                cardsRef.current[i] = el;
               }}
-              onClick={() => {
-                if (project.link && project.link !== '#') {
-                  window.open(project.link, '_blank', 'noopener,noreferrer');
-                }
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(-10px)';
-                (e.currentTarget as HTMLElement).style.boxShadow =
-                  '0 20px 50px rgba(249, 115, 22, 0.15)';
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-                (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 30px rgba(0, 0, 0, 0.4)';
-              }}
-            >
-              {/* Image area */}
-              <div className="relative overflow-hidden" style={{ aspectRatio: '16/10' }}>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#171412] to-transparent z-10 opacity-60" />
-                <img
-                  src={project.image}
-                  alt={project.imageAlt}
-                  width={640}
-                  height={400}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
-                  style={{ filter: 'grayscale(50%) contrast(1.1)' }}
-                  onMouseEnter={(e) => {
-                    (e.target as HTMLElement).style.filter = 'grayscale(0%) contrast(1.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.target as HTMLElement).style.filter = 'grayscale(50%) contrast(1.1)';
-                  }}
-                />
-              </div>
-
-              {/* Content area */}
-              <div className="p-8 relative">
-                <span
-                  className="block text-[#f97316] text-[11px] uppercase tracking-[0.15em]"
-                  style={{ fontFamily: "'Space Mono', monospace" }}
-                >
-                  {project.category}
-                </span>
-                <h3
-                  className="text-[#fafaf9] mt-2 group-hover:text-[#f97316] transition-colors duration-300"
-                  style={{
-                    fontFamily: "'Clash Display', sans-serif",
-                    fontWeight: 600,
-                    fontSize: '28px',
-                  }}
-                >
-                  {project.name}
-                </h3>
-                <p
-                  className="mt-3 text-[#a8a29e] leading-[1.7] text-[15px]"
-                  style={{ fontFamily: "'Inter', sans-serif" }}
-                >
-                  {project.description}
-                </p>
-                <div className="mt-6 flex items-center gap-2 text-[#fafaf9] group-hover:text-[#f97316] transition-colors duration-300 text-[12px] font-bold uppercase tracking-[0.15em]" style={{ fontFamily: "'Space Mono', monospace" }}>
-                  <span>VISIT SITE</span>
-                  <span className="transform group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
-                </div>
-              </div>
-            </div>
+            />
           ))}
         </div>
       </div>

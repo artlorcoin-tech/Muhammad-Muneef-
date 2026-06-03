@@ -1,9 +1,21 @@
 import { useState, useRef, useEffect } from 'react';
+import { playSound, playNote } from '../lib/sound';
 
 interface TerminalLine {
   text: string;
   type: 'input' | 'output' | 'system' | 'error' | 'success';
 }
+
+const synthNotes = [
+  { key: 'a', note: 'C4', freq: 261.63 },
+  { key: 's', note: 'D4', freq: 293.66 },
+  { key: 'd', note: 'E4', freq: 329.63 },
+  { key: 'f', note: 'F4', freq: 349.23 },
+  { key: 'g', note: 'G4', freq: 392.00 },
+  { key: 'h', note: 'A4', freq: 440.00 },
+  { key: 'j', note: 'B4', freq: 493.88 },
+  { key: 'k', note: 'C5', freq: 523.25 },
+];
 
 export default function Terminal() {
   const [history, setHistory] = useState<TerminalLine[]>([
@@ -13,6 +25,7 @@ export default function Terminal() {
     { text: "Type 'help' to explore the terminal or click on standard tabs.", type: 'success' },
   ]);
   const [input, setInput] = useState('');
+  const [showSynth, setShowSynth] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -25,6 +38,10 @@ export default function Terminal() {
         '  projects  - Show active startups and products',
         '  skills    - List programming languages & tech stack',
         '  contact   - Display contact links and email details',
+        '  theme     - Change the accent color theme (orange, cyan, green, matrix)',
+        '  matrix    - Toggle green digital code rain screen',
+        '  synth     - Open interactive digital soundboard synthesizer',
+        '  hack      - Run network diagnostic security test',
         '  clear     - Clear the terminal history',
         '  secret    - ???',
       ]);
@@ -73,15 +90,61 @@ export default function Terminal() {
         '  Instagram : @m__un__ee_f',
       ]);
     },
+    theme: () => {
+      printLines([
+        'Usage: theme [color]',
+        'Available themes:',
+        '  theme orange  - Original Kashmiri orange (default)',
+        '  theme cyan    - Deep futuristic tech cyan',
+        '  theme green   - High contrast developer green',
+        '  theme matrix  - Emerald code matrix green',
+      ]);
+    },
+    matrix: () => {
+      window.dispatchEvent(new CustomEvent('toggle-matrix'));
+      printLines([
+        '👾 [SYSTEM] Matrix digital code rain sequence initiated...',
+        '   Press ESC or click anywhere on the overlay screen to close matrix mode.',
+      ], 'success');
+    },
+    synth: () => {
+      setShowSynth(true);
+      printLines([
+        '👾 [SYNTH CONSOLE ENGAGED]',
+        '  Click note cards below or press keyboard keys A-S-D-F-G-H-J-K to synthesize audio.',
+        '  Type clear or any command to collapse synthesizer deck.',
+      ], 'success');
+    },
+    hack: () => {
+      printLines(['👾 [WARNING] INITIATING SECURITY DIAGNOSTIC BYPASS...'], 'error');
+      
+      const sequences = [
+        { text: 'Connecting to Srinagar gateway node: PORT 8080...', type: 'system' as const },
+        { text: 'Injecting buffer overflow payload into secure server db...', type: 'system' as const },
+        { text: 'Bypassing local school credentials... [STAGED]', type: 'system' as const },
+        { text: 'VAULT LOCATED. Decrypting GVEI academic registry...', type: 'error' as const },
+        { text: 'Security check: 32%... 68%... 99%... OK.', type: 'success' as const },
+        { text: 'SYSTEM OVERRIDE SUCCESSFUL. ACCESS GRANTED.', type: 'success' as const },
+        { text: 'Decrypted Message: "Age is just a number. Coding is a superpower."', type: 'success' as const },
+      ];
+
+      sequences.forEach((seq, i) => {
+        setTimeout(() => {
+          setHistory(prev => [...prev, seq]);
+          playSound('type');
+        }, (i + 1) * 350);
+      });
+    },
     secret: () => {
       printLines([
         '👾 [SUCCESS] ACCESS GRANTED.',
-        '  "Age is just a number. Coding is a superpower."',
+        '  "I don\'t just dream — I build."',
         '  Thank you for visiting my site! Drop an email to build together.',
       ], 'success');
     },
     clear: () => {
       setHistory([]);
+      setShowSynth(false);
     },
   };
 
@@ -92,15 +155,39 @@ export default function Terminal() {
 
   const handleCommand = (e: React.FormEvent) => {
     e.preventDefault();
-    const cmd = input.trim().toLowerCase();
-    
-    if (!cmd) return;
+    const trimmedInput = input.trim();
+    if (!trimmedInput) return;
 
-    const newHistory = [...history, { text: `guest@muneef:~$ ${input}`, type: 'input' as const }];
-    setHistory(newHistory);
+    // Split input to parse arguments (e.g., 'theme cyan')
+    const parts = trimmedInput.split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+    const arg = parts.slice(1).join(' ').toLowerCase();
+
+    // Log the input to command history
+    setHistory(prev => [...prev, { text: `guest@muneef:~$ ${input}`, type: 'input' }]);
     setInput('');
 
+    // Special argument routing for theme command
+    if (cmd === 'theme') {
+      if (['cyan', 'green', 'orange', 'matrix'].includes(arg)) {
+        window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: arg } }));
+        printLines([`👾 [SUCCESS] Color theme accent updated to: ${arg.toUpperCase()}`], 'success');
+      } else {
+        printLines([
+          `Error: Invalid theme '${arg}'.`,
+          'Available themes: orange, cyan, green, matrix.',
+          'Usage: theme [color] (e.g. theme cyan)',
+        ], 'error');
+      }
+      return;
+    }
+
+    // Default command execution
     if (cmd in commands) {
+      // Hide synthesizer on any command except 'synth' itself
+      if (cmd !== 'synth') {
+        setShowSynth(false);
+      }
       commands[cmd]();
     } else {
       setHistory(prev => [
@@ -109,6 +196,25 @@ export default function Terminal() {
       ]);
     }
   };
+
+  // Capture physical keyboard press triggers for playable synthesizer
+  useEffect(() => {
+    if (!showSynth) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing inside the input prompt
+      if (document.activeElement?.tagName === 'INPUT') return;
+
+      const found = synthNotes.find(n => n.key === e.key.toLowerCase());
+      if (found) {
+        e.preventDefault();
+        playNote(found.freq, 'sine');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showSynth]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -123,7 +229,7 @@ export default function Terminal() {
   return (
     <div
       onClick={focusInput}
-      className="w-full max-w-[650px] mx-auto rounded-lg border border-[#f97316]/20 bg-[#171412]/80 backdrop-blur-md shadow-2xl overflow-hidden font-mono text-[14px]"
+      className="w-full max-w-[650px] mx-auto rounded-lg border border-accent/20 bg-[#171412]/80 backdrop-blur-md shadow-2xl overflow-hidden font-mono text-[14px]"
       style={{
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
       }}
@@ -144,13 +250,13 @@ export default function Terminal() {
       {/* Terminal Output */}
       <div
         ref={containerRef}
-        className="p-5 h-[280px] overflow-y-auto flex flex-col gap-2 scrollbar-thin scrollbar-thumb-[#f97316]/20"
+        className="p-5 h-[280px] overflow-y-auto flex flex-col gap-2 scrollbar-thin scrollbar-thumb-accent/20"
       >
         {history.map((line, idx) => {
           let color = 'text-[#fafaf9]';
           if (line.type === 'system') color = 'text-[#78716c]';
           if (line.type === 'error') color = 'text-[#ef4444]';
-          if (line.type === 'success') color = 'text-[#f97316]';
+          if (line.type === 'success') color = 'text-accent';
           if (line.type === 'input') color = 'text-[#a8a29e] font-semibold';
           
           return (
@@ -161,12 +267,37 @@ export default function Terminal() {
         })}
       </div>
 
+      {/* Playable Synthesizer Panel Overlay */}
+      {showSynth && (
+        <div className="flex flex-col gap-2 p-4 border-t border-[#fafaf9]/5 bg-[#0c0a09]/50 select-none">
+          <div className="text-[10px] text-[#78716c] uppercase tracking-widest text-center font-mono font-bold">
+            Live Synthesizer soundboard
+          </div>
+          <div className="flex justify-center gap-1 py-1">
+            {synthNotes.map((n) => (
+              <button
+                key={n.note}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playNote(n.freq, 'sine');
+                }}
+                className="flex flex-col items-center justify-between py-2 px-1.5 min-w-[34px] rounded border border-accent/20 bg-[#171412] hover:bg-accent hover:text-[#0c0a09] transition-all duration-150 active:scale-90 interactive-item text-[#fafaf9]"
+              >
+                <span className="text-[10px] font-bold font-mono">{n.note}</span>
+                <span className="text-[8px] opacity-40 font-mono mt-1 uppercase">{n.key}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Input prompt */}
       <form
         onSubmit={handleCommand}
         className="flex items-center gap-2 px-5 py-3 border-t border-[#fafaf9]/5 bg-[#0c0a09]/40"
       >
-        <span className="text-[#f97316] font-semibold shrink-0">guest@muneef:~$</span>
+        <span className="text-accent font-semibold shrink-0">guest@muneef:~$</span>
         <input
           ref={inputRef}
           type="text"

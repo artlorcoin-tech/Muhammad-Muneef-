@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { playSound } from '../lib/sound';
 
 const vertexShaderSource = `
 precision mediump float;
@@ -49,6 +51,11 @@ uniform float u_mousePower;
 uniform float u_mouseRadius;
 uniform vec2 u_mouseDirection;
 uniform sampler2D u_displacementTexture;
+
+// Click shockwave uniforms
+uniform vec2 u_clickPosition;
+uniform float u_clickPower;
+
 varying vec2 v_uv;
 
 float l(vec2 uv, vec2 p, vec2 a, float r) {
@@ -60,10 +67,6 @@ vec2 d(vec2 uv, vec2 p, vec2 a, float r, float aspect) {
   float dx = (L * a.x * (r - distance(vec2(uv.x / aspect, uv.y), p)) * (uv.x / aspect - p.x));
   float dy = (L * a.y * (r - distance(vec2(uv.x / aspect, uv.y), p)) * (uv.y - p.y));
   return vec2(dx, dy);
-}
-
-vec2 v(vec2 uv, float p) {
-  return cos(uv * 6. + p) + cos(uv * 4. - p);
 }
 
 float hash(vec2 p) {
@@ -78,6 +81,17 @@ void main() {
   vec2 a = (vec2(.04) * (1. - u_mousePower * .25)) + previous.gb;
   vec2 mouseDirection = u_mouseDirection;
   a += d(uv, p, mouseDirection, u_mouseRadius, aspect);
+  
+  // Click shockwave displacement
+  if (u_clickPower > 0.0) {
+    float dist = distance(vec2(uv.x / aspect, uv.y), vec2(u_clickPosition.x / aspect, u_clickPosition.y));
+    if (dist > 0.001) {
+      float ripple = sin(dist * 35.0 - u_clickPower * 12.0) * exp(-dist * 3.5) * u_clickPower * 0.15;
+      vec2 dir = normalize(vec2(uv.x / aspect, uv.y) - vec2(u_clickPosition.x / aspect, u_clickPosition.y));
+      a += dir * ripple;
+    }
+  }
+
   float g = .7 + (.15 * sin(uv.y * 11. + previous.r * 2.) + .07 * sin(uv.y * 38. + previous.r * 3.)) * smoothstep(.4, .0, abs(uv.x - .5));
   a *= g;
   float t = previous.r;
@@ -103,6 +117,7 @@ function createShader(gl: WebGLRenderingContext, type: number, source: string): 
   return shader;
 }
 
+// Helper to create program
 function createProgram(gl: WebGLRenderingContext, vertexShader: WebGLShader, fragmentShader: WebGLShader): WebGLProgram | null {
   const program = gl.createProgram();
   if (!program) return null;
@@ -166,8 +181,10 @@ export default function InkEffect() {
 
     // Mouse state
     const mouse = { x: -1, y: -1, prevX: -1, prevY: -1, velX: 0, velY: 0, active: false };
-    const trail = Array(15).fill(null).map(() => ({ x: 0, y: 0 }));
     const MOUSE_RADIUS = 1.0;
+
+    // Click splash state
+    const clickState = { x: -1, y: -1, power: 0.0 };
 
     // Load noise texture
     const noiseTexture = gl.createTexture();
@@ -208,11 +225,45 @@ export default function InkEffect() {
       mouse.prevY = mouse.y;
       mouse.active = true;
     };
+    
     const onMouseLeave = () => {
       mouse.active = false;
     };
+
+    // Mousedown listener for WebGL ripple click splash
+    const onMouseDown = (e: MouseEvent) => {
+      // Don't trigger if clicking on interactive items (like buttons, links, search input, etc)
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'A' ||
+        target.tagName === 'BUTTON' ||
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.closest('a') ||
+        target.closest('button') ||
+        target.closest('.interactive-item')
+      ) {
+        return;
+      }
+
+      clickState.x = e.clientX / window.innerWidth;
+      clickState.y = 1.0 - (e.clientY / window.innerHeight);
+      clickState.power = 1.0;
+
+      // Animate shockwave power decay
+      gsap.killTweensOf(clickState);
+      gsap.to(clickState, {
+        power: 0.0,
+        duration: 1.4,
+        ease: 'power2.out',
+      });
+
+      playSound('click');
+    };
+
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseleave', onMouseLeave);
+    window.addEventListener('mousedown', onMouseDown);
 
     let flipFlop = false;
     let rafId: number;
@@ -223,15 +274,6 @@ export default function InkEffect() {
       const width = window.innerWidth;
       const height = window.innerHeight;
       const aspect = width / height;
-
-      // Update trail
-      if (mouse.active) {
-        trail.pop();
-        trail.unshift({ x: mouse.x, y: mouse.y });
-      } else {
-        trail.pop();
-        trail.unshift({ x: 0, y: 0 });
-      }
 
       flipFlop = !flipFlop;
 
@@ -261,6 +303,13 @@ export default function InkEffect() {
 
       const uDispResolution = gl.getUniformLocation(displacementProgram, 'u_resolution');
       gl.uniform2f(uDispResolution, dispW, dispH);
+
+      // Bind click shockwave uniforms
+      const uClickPos = gl.getUniformLocation(displacementProgram, 'u_clickPosition');
+      gl.uniform2f(uClickPos, clickState.x, clickState.y);
+
+      const uClickPower = gl.getUniformLocation(displacementProgram, 'u_clickPower');
+      gl.uniform1f(uClickPower, clickState.power);
 
       // Draw fullscreen triangle
       const aPositionDisp = gl.getAttribLocation(displacementProgram, 'a_position');
@@ -314,6 +363,7 @@ export default function InkEffect() {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseleave', onMouseLeave);
+      window.removeEventListener('mousedown', onMouseDown);
       gl.deleteProgram(displayProgram);
       gl.deleteProgram(displacementProgram);
       gl.deleteShader(vertShader);

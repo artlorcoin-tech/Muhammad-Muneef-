@@ -136,3 +136,27 @@ export function playSound(type: 'click' | 'hover' | 'type' | 'success' | 'boot' 
     console.warn("Failed to play synthesized sound:", err);
   }
 }
+
+export function playNote(frequency: number, type: OscillatorType = 'sine', duration = 0.4) {
+  if (!isSoundEnabled) return;
+  try {
+    const ctx = getAudioContext();
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    
+    osc.type = type;
+    osc.frequency.setValueAtTime(frequency, now);
+    
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.start(now);
+    osc.stop(now + duration);
+  } catch (err) {
+    console.warn("Failed to play note:", err);
+  }
+}

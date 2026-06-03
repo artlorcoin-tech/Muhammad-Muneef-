@@ -12,12 +12,14 @@ import Contact from './components/Contact';
 import Preloader from './components/Preloader';
 import CustomCursor from './components/CustomCursor';
 import SpotlightSearch from './components/SpotlightSearch';
+import MatrixRain from './components/MatrixRain';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [matrixActive, setMatrixActive] = useState(false);
 
   // Initialize Lenis scroll only after loading completes
   useEffect(() => {
@@ -42,7 +44,7 @@ export default function App() {
     };
   }, [isLoading]);
 
-  // Global Ctrl+K / Cmd+K listener
+  // Global Ctrl+K / Cmd+K and Event listeners for Matrix Rain / Themes
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
@@ -50,8 +52,32 @@ export default function App() {
         setSearchOpen((prev) => !prev);
       }
     };
+
+    const handleToggleMatrix = () => {
+      setMatrixActive((prev) => !prev);
+    };
+
+    const handleThemeChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ theme: string }>;
+      const nextTheme = customEvent.detail?.theme;
+      if (nextTheme) {
+        const html = document.documentElement;
+        html.classList.remove('theme-cyan', 'theme-green', 'theme-orange', 'theme-matrix');
+        if (nextTheme !== 'orange') {
+          html.classList.add(`theme-${nextTheme}`);
+        }
+      }
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('toggle-matrix', handleToggleMatrix);
+    window.addEventListener('theme-change', handleThemeChange);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('toggle-matrix', handleToggleMatrix);
+      window.removeEventListener('theme-change', handleThemeChange);
+    };
   }, []);
 
   return (
@@ -62,16 +88,19 @@ export default function App() {
       {/* 2. Boot Preloader diagnostic sequence overlay */}
       {isLoading && <Preloader onComplete={() => setIsLoading(false)} />}
 
-      {/* 3. Persistent WebGL ink background */}
+      {/* 3. Fullscreen Green Code Rain (toggled via terminal "/matrix") */}
+      <MatrixRain active={matrixActive} onClose={() => setMatrixActive(false)} />
+
+      {/* 4. Persistent WebGL ink background */}
       <InkEffect />
 
-      {/* 4. Global Navigation */}
+      {/* 5. Global Navigation */}
       <Navigation onSearchOpen={() => setSearchOpen(true)} />
 
-      {/* 5. Spotlight Search & Command Menu Overlay */}
+      {/* 6. Spotlight Search & Command Menu Overlay */}
       <SpotlightSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
-      {/* 6. Main Scrollable Sections */}
+      {/* 7. Main Scrollable Sections */}
       <main id="main-content" className="relative" style={{ zIndex: 1 }}>
         <Hero />
         <About />

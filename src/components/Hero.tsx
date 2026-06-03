@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { useTextScramble } from '../hooks/useTextScramble';
+import { playSound } from '../lib/sound';
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -8,6 +10,10 @@ export default function Hero() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+
+  // Scramble hooks for firstName and lastName
+  const { displayText: firstName, scramble: scrambleFirst } = useTextScramble('MUHAMMAD', 1.4);
+  const { displayText: lastName, scramble: scrambleLast } = useTextScramble('MUNEEF', 1.4);
 
   useEffect(() => {
     const tl = gsap.timeline();
@@ -91,13 +97,13 @@ export default function Hero() {
     <section
       id="hero"
       ref={sectionRef}
-      className="relative flex items-center justify-center min-h-[100dvh] overflow-hidden"
+      className="relative flex items-center justify-center min-h-[100dvh] overflow-hidden select-none"
       style={{ zIndex: 1 }}
       aria-label="Hero introduction — Muhammad Muneef"
     >
       {/* Glow effects for advanced aesthetics */}
-      <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] rounded-full bg-[#f97316]/10 blur-[100px] pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] rounded-full bg-orange-600/5 blur-[120px] pointer-events-none" />
+      <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] rounded-full bg-[#f97316]/10 blur-[100px] pointer-events-none glow-blur" />
+      <div className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] rounded-full bg-orange-600/5 blur-[120px] pointer-events-none glow-blur" />
 
       {/* Radial gradient overlay for text contrast */}
       <div
@@ -113,10 +119,14 @@ export default function Hero() {
           Muhammad Muneef — 14-Year-Old Tech Entrepreneur, Developer & Debater from Kashmir
         </h1>
 
-        {/* First name with drip animation */}
+        {/* First name with drip animation & scramble on hover */}
         <div
           ref={headlineRef}
-          className="hero-headline text-[#fafaf9] leading-none tracking-[-0.03em]"
+          onMouseEnter={() => {
+            scrambleFirst();
+            playSound('hover');
+          }}
+          className="hero-headline text-[#fafaf9] leading-none tracking-[-0.03em] cursor-default"
           style={{
             fontFamily: "'Clash Display', sans-serif",
             fontWeight: 700,
@@ -124,13 +134,17 @@ export default function Hero() {
           }}
           aria-hidden="true"
         >
-          {renderChars('MUHAMMAD')}
+          {renderChars(firstName)}
         </div>
 
-        {/* Last name */}
+        {/* Last name & scramble on hover */}
         <div
           ref={lastNameRef}
-          className="text-[#a8a29e] leading-none tracking-[-0.03em] mt-4"
+          onMouseEnter={() => {
+            scrambleLast();
+            playSound('hover');
+          }}
+          className="text-[#a8a29e] leading-none tracking-[-0.03em] mt-4 cursor-default"
           style={{
             fontFamily: "'Clash Display', sans-serif",
             fontWeight: 600,
@@ -138,13 +152,13 @@ export default function Hero() {
           }}
           aria-hidden="true"
         >
-          {renderChars('MUNEEF')}
+          {renderChars(lastName)}
         </div>
 
         {/* Subtitle */}
         <p
           ref={subtitleRef}
-          className="mt-8 text-[#f97316] text-[13px] font-bold uppercase tracking-[0.2em]"
+          className="mt-8 text-accent text-[13px] font-bold uppercase tracking-[0.2em]"
           style={{ fontFamily: "'Space Mono', monospace" }}
         >
           ENTREPRENEUR &middot; DEBATER &middot; DEVELOPER
