@@ -21,49 +21,71 @@ export default function Hero() {
     // Headline characters animation
     if (headlineRef.current) {
       const chars = headlineRef.current.querySelectorAll('span');
-      gsap.set(chars, { y: 60, opacity: 0 });
+      gsap.set(headlineRef.current, { perspective: 1000 });
+      gsap.set(chars, { 
+        y: 80, 
+        opacity: 0, 
+        scale: 0.2, 
+        rotateX: -70,
+        z: -200 
+      });
       tl.to(chars, {
         y: 0,
         opacity: 1,
-        duration: 1.0,
-        ease: 'power3.out',
-        stagger: 0.03,
-        delay: 0.5,
+        scale: 1,
+        rotateX: 0,
+        z: 0,
+        duration: 1.3,
+        ease: 'power4.out',
+        stagger: 0.04,
+        delay: 0.4,
       });
     }
 
     // Last name animation
     if (lastNameRef.current) {
       const chars = lastNameRef.current.querySelectorAll('span');
-      gsap.set(chars, { y: 60, opacity: 0 });
+      gsap.set(lastNameRef.current, { perspective: 1000 });
+      gsap.set(chars, { 
+        y: 80, 
+        opacity: 0, 
+        scale: 0.2, 
+        rotateX: -70,
+        z: -200 
+      });
       tl.to(chars, {
         y: 0,
         opacity: 1,
-        duration: 1.0,
-        ease: 'power3.out',
-        stagger: 0.03,
-      }, '-=0.5');
+        scale: 1,
+        rotateX: 0,
+        z: 0,
+        duration: 1.3,
+        ease: 'power4.out',
+        stagger: 0.04,
+      }, '-=0.8');
     }
 
     // Subtitle
     if (subtitleRef.current) {
-      gsap.set(subtitleRef.current, { opacity: 0, y: 20 });
+      gsap.set(subtitleRef.current, { opacity: 0, y: 35, scale: 0.9 });
       tl.to(subtitleRef.current, {
         opacity: 1,
         y: 0,
-        duration: 0.8,
-        ease: 'power2.out',
-      }, '-=0.3');
+        scale: 1,
+        duration: 1.0,
+        ease: 'power3.out',
+      }, '-=0.5');
     }
 
     // Tagline
     if (taglineRef.current) {
-      gsap.set(taglineRef.current, { opacity: 0 });
+      gsap.set(taglineRef.current, { opacity: 0, y: 15 });
       tl.to(taglineRef.current, {
         opacity: 1,
-        duration: 1.0,
+        y: 0,
+        duration: 1.2,
         ease: 'power2.out',
-      }, '-=0.3');
+      }, '-=0.4');
     }
 
     // Scroll indicator fade out on scroll

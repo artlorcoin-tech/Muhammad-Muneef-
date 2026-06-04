@@ -76,20 +76,28 @@ export default function Timeline() {
     // Staggered cards animation
     const cards = el.querySelectorAll('.timeline-card');
     cards.forEach((card, idx) => {
+      gsap.set(card, { 
+        transformOrigin: window.innerWidth < 768 ? 'left center' : (idx % 2 === 0 ? 'right center' : 'left center'), 
+        perspective: 1000 
+      });
       gsap.fromTo(
         card,
         {
           opacity: 0,
-          x: window.innerWidth < 768 ? 40 : idx % 2 === 0 ? -65 : 65,
+          scale: 0.8,
+          rotateY: window.innerWidth < 768 ? 20 : (idx % 2 === 0 ? -25 : 25),
+          x: window.innerWidth < 768 ? 30 : (idx % 2 === 0 ? -65 : 65),
         },
         {
           opacity: 1,
+          scale: 1,
+          rotateY: 0,
           x: 0,
-          duration: 0.8,
-          ease: 'power3.out',
+          duration: 1.1,
+          ease: 'back.out(1.1)',
           scrollTrigger: {
             trigger: card,
-            start: 'top 80%',
+            start: 'top 82%',
             toggleActions: 'play none none none',
           },
         }
