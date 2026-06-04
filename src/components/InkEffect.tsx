@@ -19,13 +19,8 @@ uniform vec2 u_mouse;
 uniform float u_time;
 uniform float u_ratio;
 uniform sampler2D u_displacement;
-uniform sampler2D u_texture; // Noise texture
-uniform vec3 u_brandColor; // Active theme color passed from JS
+uniform sampler2D u_texture;
 varying vec2 v_uv;
-
-// Click shockwave uniforms
-uniform vec2 u_clickPosition;
-uniform float u_clickPower;
 
 float smoothCircle(vec2 st, vec2 center, float radius) {
   return 1. - smoothstep(0., radius, distance(st, center));
@@ -36,62 +31,15 @@ void main() {
   uv.y = 1. - uv.y;
   vec2 mouse = u_mouse;
   mouse.y = 1. - mouse.y;
-  
-  // Calculate correct aspect ratios for circles and grids
-  float aspect = u_ratio;
-  vec2 st = vec2(uv.x * aspect, uv.y);
-  vec2 mst = vec2(mouse.x * aspect, mouse.y);
-  
-  // Read displacement
   vec2 displacement = texture2D(u_displacement, uv).rg;
-  
-  // Add organic noise shift using u_texture (noise.jpg)
-  vec2 noiseShift = texture2D(u_texture, uv + u_time * 0.015).rg * 0.004;
-  
-  // Displaced coordinates
-  vec2 displaced_uv = uv + displacement * 0.12 + noiseShift;
-  vec2 displaced_st = vec2(displaced_uv.x * aspect, displaced_uv.y);
-  
-  // Draw procedural grid on displaced space
-  vec2 gridUV = fract(displaced_st * 16.0); // 16 columns/rows
-  float gridLine = smoothstep(0.012, 0.0, abs(gridUV.x - 0.5)) + 
-                   smoothstep(0.012, 0.0, abs(gridUV.y - 0.5));
-  gridLine = clamp(gridLine, 0.0, 1.0);
-  
-  // Base dark background matching index.css body (#0c0a09)
-  vec3 bgColor = vec3(0.047, 0.04, 0.035);
-  
-  // Base grid border line color
-  vec3 gridBaseColor = vec3(0.12, 0.11, 0.10);
-  
-  // Light up grid near mouse
-  float mouseGlow = smoothCircle(displaced_st, mst, 0.4);
-  vec3 gridColor = mix(gridBaseColor, u_brandColor, mouseGlow * 0.85);
-  
-  // Mix background and grid
-  vec3 color = mix(bgColor, gridColor, gridLine * 0.35);
-  
-  // Add direct glowing core under mouse
-  float mouseCore = smoothCircle(displaced_st, mst, 0.05);
-  color += u_brandColor * mouseCore * 0.5;
-  
-  // Make the fluid displacement smoke trail glow in the brand color
-  float dispIntensity = length(displacement);
-  color += u_brandColor * dispIntensity * 0.75;
-  
-  // Click shockwave glowing ring propagation
-  if (u_clickPower > 0.0) {
-    vec2 clickPos = u_clickPosition;
-    clickPos.y = 1.0 - clickPos.y;
-    float dist = distance(displaced_st, vec2(clickPos.x * aspect, clickPos.y));
-    
-    // Wave radius grows as u_clickPower decays from 1.0 to 0.0
-    float waveRadius = (1.0 - u_clickPower) * 1.6;
-    float ring = smoothstep(0.18, 0.0, abs(dist - waveRadius)) * u_clickPower;
-    color += u_brandColor * ring * 0.8;
-  }
-  
-  gl_FragColor = vec4(color, 1.0);
+  float mouseDistance = distance(uv, mouse);
+  float c = .04 * smoothCircle(uv, mouse, .23);
+  vec2 new_uv;
+  new_uv.x = uv.x + displacement.r * c;
+  new_uv.y = (uv.y - .04) - displacement.g * c;
+  vec3 color = texture2D(u_texture, new_uv).rgb;
+  color = mix(color, vec3(0.15, 0.15, 0.15), smoothCircle(uv, mouse, .012));
+  gl_FragColor = vec4(color, 1.);
 }
 `;
 
@@ -134,11 +82,11 @@ void main() {
   vec2 mouseDirection = u_mouseDirection;
   a += d(uv, p, mouseDirection, u_mouseRadius, aspect);
   
-  // Click shockwave displacement (3x stronger, slower decay)
+  // Click shockwave displacement
   if (u_clickPower > 0.0) {
     float dist = distance(vec2(uv.x / aspect, uv.y), vec2(u_clickPosition.x / aspect, u_clickPosition.y));
     if (dist > 0.001) {
-      float ripple = sin(dist * 50.0 - u_clickPower * 18.0) * exp(-dist * 2.5) * u_clickPower * 0.45;
+      float ripple = sin(dist * 35.0 - u_clickPower * 12.0) * exp(-dist * 3.5) * u_clickPower * 0.15;
       vec2 dir = normalize(vec2(uv.x / aspect, uv.y) - vec2(u_clickPosition.x / aspect, u_clickPosition.y));
       a += dir * ripple;
     }
@@ -155,16 +103,6 @@ void main() {
   gl_FragColor = vec4(t, a, 1.);
 }
 `;
-
-function hslToRgb(h: number, s: number, l: number): [number, number, number] {
-  s /= 100;
-  l /= 100;
-  const k = (n: number) => (n + h / 30) % 12;
-  const a = s * Math.min(l, 1 - l);
-  const f = (n: number) =>
-    l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
-  return [f(0), f(8), f(4)];
-}
 
 function createShader(gl: WebGLRenderingContext, type: number, source: string): WebGLShader | null {
   const shader = gl.createShader(type);
@@ -247,24 +185,6 @@ export default function InkEffect() {
     // Click splash state
     const clickState = { x: -1, y: -1, power: 0.0 };
 
-    // Parse active theme custom property
-    const getBrandRGB = (): [number, number, number] => {
-      try {
-        const style = getComputedStyle(document.documentElement);
-        const value = style.getPropertyValue('--brand-accent').trim();
-        const parts = value.split(/\s+/);
-        if (parts.length >= 3) {
-          const h = parseFloat(parts[0]);
-          const s = parseFloat(parts[1].replace('%', ''));
-          const l = parseFloat(parts[2].replace('%', ''));
-          return hslToRgb(h, s, l);
-        }
-      } catch (err) {
-        console.warn("Failed to parse brand color:", err);
-      }
-      return [0.976, 0.45, 0.086]; // Fallback orange
-    };
-
     // Load noise texture
     const noiseTexture = gl.createTexture();
     const noiseImage = new Image();
@@ -308,9 +228,10 @@ export default function InkEffect() {
     const onMouseLeave = () => {
       mouse.active = false;
     };
-    
+
     // Mousedown listener for WebGL ripple click splash
     const onMouseDown = (e: MouseEvent) => {
+      // Don't trigger if clicking on interactive items (like buttons, links, search input, etc)
       const target = e.target as HTMLElement;
       if (
         target.tagName === 'A' ||
@@ -332,7 +253,7 @@ export default function InkEffect() {
       gsap.killTweensOf(clickState);
       gsap.to(clickState, {
         power: 0.0,
-        duration: 1.6,
+        duration: 1.4,
         ease: 'power2.out',
       });
 
@@ -370,9 +291,8 @@ export default function InkEffect() {
       const uMouseDisp = gl.getUniformLocation(displacementProgram, 'u_mouse');
       gl.uniform2f(uMouseDisp, mouse.x, mouse.y);
 
-      // Scale velocity vectors by 8.0 for more pronounced dragging ripples
       const uMouseDirection = gl.getUniformLocation(displacementProgram, 'u_mouseDirection');
-      gl.uniform2f(uMouseDirection, (mouse.velX || 0) * 8.0, (mouse.velY || 0) * 8.0);
+      gl.uniform2f(uMouseDirection, mouse.velX || 0, mouse.velY || 0);
 
       const uMousePower = gl.getUniformLocation(displacementProgram, 'u_mousePower');
       gl.uniform1f(uMousePower, 0.0);
@@ -383,7 +303,7 @@ export default function InkEffect() {
       const uDispResolution = gl.getUniformLocation(displacementProgram, 'u_resolution');
       gl.uniform2f(uDispResolution, dispW, dispH);
 
-      // Bind click shockwave uniforms for displacement program
+      // Bind click shockwave uniforms
       const uClickPos = gl.getUniformLocation(displacementProgram, 'u_clickPosition');
       gl.uniform2f(uClickPos, clickState.x, clickState.y);
 
@@ -426,18 +346,6 @@ export default function InkEffect() {
 
       const uDisplayResolution = gl.getUniformLocation(displayProgram, 'u_resolution');
       gl.uniform2f(uDisplayResolution, canvas.width, canvas.height);
-
-      // Bind click shockwave uniforms for display program
-      const uDisplayClickPos = gl.getUniformLocation(displayProgram, 'u_clickPosition');
-      gl.uniform2f(uDisplayClickPos, clickState.x, clickState.y);
-
-      const uDisplayClickPower = gl.getUniformLocation(displayProgram, 'u_clickPower');
-      gl.uniform1f(uDisplayClickPower, clickState.power);
-
-      // Bind dynamic brand color based on CSS --brand-accent variable
-      const [r, g, b] = getBrandRGB();
-      const uBrandColor = gl.getUniformLocation(displayProgram, 'u_brandColor');
-      gl.uniform3f(uBrandColor, r, g, b);
 
       // Draw fullscreen triangle
       const aPositionDisplay = gl.getAttribLocation(displayProgram, 'a_position');
