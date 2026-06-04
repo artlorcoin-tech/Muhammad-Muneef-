@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { use3DTilt } from '../hooks/use3DTilt';
 import { playSound } from '../lib/sound';
+import CaseStudyModal from './CaseStudyModal';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -29,17 +30,16 @@ interface ProjectCardProps {
   project: typeof projects[0];
   index: number;
   onEnter: (el: HTMLDivElement | null) => void;
+  onSelect: (name: string) => void;
 }
 
-function ProjectCard({ project, onEnter }: ProjectCardProps) {
+function ProjectCard({ project, onEnter, onSelect }: ProjectCardProps) {
   // Wrap card with 3D tilt hook
   const cardRef = use3DTilt<HTMLDivElement>(6);
 
   const handleClick = () => {
     playSound('success');
-    if (project.link && project.link !== '#') {
-      window.open(project.link, '_blank', 'noopener,noreferrer');
-    }
+    onSelect(project.name);
   };
 
   return (
@@ -49,7 +49,7 @@ function ProjectCard({ project, onEnter }: ProjectCardProps) {
         (cardRef as any).current = el;
         onEnter(el);
       }}
-      className="group cursor-pointer rounded-xl overflow-hidden border border-[#fafaf9]/5 bg-[#171412]/60 backdrop-blur-md transition-all duration-500 hover:border-accent/30 relative interactive-item select-none"
+      className="group cursor-pointer rounded-xl overflow-hidden border border-[#fafaf9]/5 bg-[#171412]/60 backdrop-blur-md transition-all duration-500 hover:border-brand/30 relative interactive-item select-none"
       style={{
         transform: 'translateY(0)',
         boxShadow: '0 4px 30px rgba(0, 0, 0, 0.4)',
@@ -83,13 +83,13 @@ function ProjectCard({ project, onEnter }: ProjectCardProps) {
       {/* Content area */}
       <div className="p-8 relative">
         <span
-          className="block text-accent text-[11px] uppercase tracking-[0.15em]"
+          className="block text-brand text-[11px] uppercase tracking-[0.15em]"
           style={{ fontFamily: "'Space Mono', monospace" }}
         >
           {project.category}
         </span>
         <h3
-          className="text-[#fafaf9] mt-2 group-hover:text-accent transition-colors duration-300"
+          className="text-[#fafaf9] mt-2 group-hover:text-brand transition-colors duration-300"
           style={{
             fontFamily: "'Clash Display', sans-serif",
             fontWeight: 600,
@@ -104,8 +104,8 @@ function ProjectCard({ project, onEnter }: ProjectCardProps) {
         >
           {project.description}
         </p>
-        <div className="mt-6 flex items-center gap-2 text-[#fafaf9] group-hover:text-accent transition-colors duration-300 text-[12px] font-bold uppercase tracking-[0.15em]" style={{ fontFamily: "'Space Mono', monospace" }}>
-          <span>VISIT SITE</span>
+        <div className="mt-6 flex items-center gap-2 text-[#fafaf9] group-hover:text-brand transition-colors duration-300 text-[12px] font-bold uppercase tracking-[0.15em]" style={{ fontFamily: "'Space Mono', monospace" }}>
+          <span>OPEN CASE CONSOLE</span>
           <span className="transform group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
         </div>
       </div>
@@ -117,6 +117,7 @@ export default function Projects() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -169,53 +170,63 @@ export default function Projects() {
   }, []);
 
   return (
-    <section
-      id="projects"
-      ref={sectionRef}
-      className="relative"
-      aria-label="Projects and startups by Muhammad Muneef"
-      style={{
-        zIndex: 1,
-        background: 'rgba(12, 10, 9, 0.95)',
-        padding: 'clamp(100px, 12vw, 160px) clamp(24px, 5vw, 80px)',
-      }}
-    >
-      <div className="max-w-[1200px] mx-auto">
-        {/* Header */}
-        <div ref={headerRef}>
-          <span
-            className="block text-accent text-[12px] uppercase tracking-[0.08em] mb-10"
-            style={{ fontFamily: "'Space Mono', monospace" }}
-          >
-            (002) PROJECTS
-          </span>
-          <h2
-            className="text-[#fafaf9]"
-            style={{
-              fontFamily: "'Clash Display', sans-serif",
-              fontWeight: 600,
-              fontSize: 'clamp(36px, 5vw, 64px)',
-              letterSpacing: '-0.01em',
-            }}
-          >
-            What I&rsquo;ve Built
-          </h2>
-        </div>
-
-        {/* Project grid */}
-        <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-10">
-          {projects.map((project, i) => (
-            <ProjectCard
-              key={project.name}
-              project={project}
-              index={i}
-              onEnter={(el) => {
-                cardsRef.current[i] = el;
+    <>
+      <section
+        id="projects"
+        ref={sectionRef}
+        className="relative"
+        aria-label="Projects and startups by Muhammad Muneef"
+        style={{
+          zIndex: 1,
+          background: 'rgba(12, 10, 9, 0.95)',
+          padding: 'clamp(100px, 12vw, 160px) clamp(24px, 5vw, 80px)',
+        }}
+      >
+        <div className="max-w-[1200px] mx-auto">
+          {/* Header */}
+          <div ref={headerRef}>
+            <span
+              className="block text-brand text-[12px] uppercase tracking-[0.08em] mb-10"
+              style={{ fontFamily: "'Space Mono', monospace" }}
+            >
+              (002) PROJECTS
+            </span>
+            <h2
+              className="text-[#fafaf9]"
+              style={{
+                fontFamily: "'Clash Display', sans-serif",
+                fontWeight: 600,
+                fontSize: 'clamp(36px, 5vw, 64px)',
+                letterSpacing: '-0.01em',
               }}
-            />
-          ))}
+            >
+              What I&rsquo;ve Built
+            </h2>
+          </div>
+
+          {/* Project grid */}
+          <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-10">
+            {projects.map((project, i) => (
+              <ProjectCard
+                key={project.name}
+                project={project}
+                index={i}
+                onSelect={(name) => setSelectedProject(name)}
+                onEnter={(el) => {
+                  cardsRef.current[i] = el;
+                }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Case Study Deck Drawer */}
+      <CaseStudyModal
+        isOpen={selectedProject !== null}
+        onClose={() => setSelectedProject(null)}
+        projectName={selectedProject}
+      />
+    </>
   );
 }

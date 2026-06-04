@@ -102,8 +102,8 @@ export default function Hero() {
       aria-label="Hero introduction — Muhammad Muneef"
     >
       {/* Glow effects for advanced aesthetics */}
-      <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] rounded-full bg-[#f97316]/10 blur-[100px] pointer-events-none glow-blur" />
-      <div className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] rounded-full bg-orange-600/5 blur-[120px] pointer-events-none glow-blur" />
+      <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] rounded-full bg-brand/10 blur-[100px] pointer-events-none glow-blur" />
+      <div className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] rounded-full bg-brand/5 blur-[120px] pointer-events-none glow-blur" />
 
       {/* Radial gradient overlay for text contrast */}
       <div
@@ -184,7 +184,7 @@ export default function Hero() {
         </span>
         <div className="relative w-[1px] h-[40px] bg-[#a8a29e] opacity-50">
           <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[3px] h-[3px] rounded-full bg-[#f97316]"
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[3px] h-[3px] rounded-full bg-brand"
             style={{
               animation: 'scroll-dot 1.5s ease-in-out infinite',
             }}

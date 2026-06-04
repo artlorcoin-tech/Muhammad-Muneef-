@@ -73,12 +73,12 @@ export default function BlogReader({ isOpen, onClose, post }: BlogReaderProps) {
       >
         {/* Top Control Bar */}
         <div className="flex items-center justify-between px-6 sm:px-8 py-4 border-b border-[#fafaf9]/5 bg-[#0c0a09]/50">
-          <span className="text-[11px] text-[#f97316] uppercase tracking-wider font-bold" style={{ fontFamily: "'Space Mono', monospace" }}>
+          <span className="text-[11px] text-brand uppercase tracking-wider font-bold" style={{ fontFamily: "'Space Mono', monospace" }}>
             {post.category}
           </span>
           <button
             onClick={handleClose}
-            className="text-[11px] text-[#a8a29e] hover:text-[#f97316] uppercase tracking-widest font-bold flex items-center gap-2 py-2 px-3 border border-[#fafaf9]/5 hover:border-[#f97316]/20 rounded transition-all duration-300"
+            className="text-[11px] text-[#a8a29e] hover:text-brand uppercase tracking-widest font-bold flex items-center gap-2 py-2 px-3 border border-[#fafaf9]/5 hover:border-brand/20 rounded transition-all duration-300"
             style={{ fontFamily: "'Space Mono', monospace" }}
           >
             <span>ESC // Close</span>
@@ -87,7 +87,7 @@ export default function BlogReader({ isOpen, onClose, post }: BlogReaderProps) {
         </div>
 
         {/* Scrollable Article Area */}
-        <div className="flex-1 overflow-y-auto px-6 sm:px-12 py-10 scrollbar-thin scrollbar-thumb-[#f97316]/10">
+        <div className="flex-1 overflow-y-auto px-6 sm:px-12 py-10 scrollbar-thin scrollbar-thumb-brand/10">
           <header className="mb-8">
             {/* Meta row */}
             <div className="flex items-center gap-4 text-[#78716c] text-[12px] font-semibold" style={{ fontFamily: "'Space Mono', monospace" }}>
@@ -104,7 +104,7 @@ export default function BlogReader({ isOpen, onClose, post }: BlogReaderProps) {
               {post.title}
             </h1>
 
-            <div className="h-[2px] w-16 bg-[#f97316] mt-6" />
+            <div className="h-[2px] w-16 bg-brand mt-6" />
           </header>
 
           {/* Body Content */}
@@ -130,7 +130,7 @@ export default function BlogReader({ isOpen, onClose, post }: BlogReaderProps) {
                 return (
                   <blockquote
                     key={index}
-                    className="border-l-2 border-[#f97316] pl-5 italic text-[#a8a29e] my-6 text-[18px]"
+                    className="border-l-2 border-brand pl-5 italic text-[#a8a29e] my-6 text-[18px]"
                   >
                     {paragraph.replace('&gt; ', '')}
                   </blockquote>
@@ -141,7 +141,7 @@ export default function BlogReader({ isOpen, onClose, post }: BlogReaderProps) {
                 return (
                   <pre
                     key={index}
-                    className="bg-[#0c0a09] border border-[#fafaf9]/5 rounded-lg p-4 font-mono text-[14px] text-[#f97316] overflow-x-auto my-6"
+                    className="bg-[#0c0a09] border border-[#fafaf9]/5 rounded-lg p-4 font-mono text-[14px] text-brand overflow-x-auto my-6"
                   >
                     {paragraph.replace(/`/g, '')}
                   </pre>

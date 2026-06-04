@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Terminal from './Terminal';
 import Dashboard from './Dashboard';
+import Timeline from './Timeline';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -90,7 +91,7 @@ export default function About() {
         {/* Section label */}
         <span
           ref={labelRef}
-          className="block text-[#f97316] text-[12px] uppercase tracking-[0.08em] mb-10"
+          className="block text-brand text-[12px] uppercase tracking-[0.08em] mb-10"
           style={{ fontFamily: "'Space Mono', monospace" }}
         >
           (001) ABOUT
@@ -139,7 +140,7 @@ export default function About() {
               {stats.map((stat) => (
                 <div key={stat.label} className="stat-item flex flex-col">
                   <span
-                    className="text-[#f97316]"
+                    className="text-brand"
                     style={{
                       fontFamily: "'Clash Display', sans-serif",
                       fontWeight: 700,
@@ -164,7 +165,7 @@ export default function About() {
           <div className="lg:col-span-6 w-full">
             <div className="relative group">
               {/* Decorative terminal glow background */}
-              <div className="absolute inset-0 bg-[#f97316]/5 rounded-lg filter blur-xl group-hover:bg-[#f97316]/10 transition-all duration-500 -z-10" />
+              <div className="absolute inset-0 bg-brand/5 rounded-lg filter blur-xl group-hover:bg-brand/10 transition-all duration-500 -z-10" />
               <Terminal />
             </div>
           </div>
@@ -172,6 +173,9 @@ export default function About() {
 
         {/* Interactive Venture Dashboard */}
         <Dashboard />
+
+        {/* Milestone Roadmap */}
+        <Timeline />
       </div>
     </section>
   );

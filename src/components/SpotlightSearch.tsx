@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import gsap from 'gsap';
 import { playSound, getSoundEnabled, setSoundEnabled } from '../lib/sound';
+import { useIsMobile } from '../hooks/use-mobile';
 
 interface SpotlightSearchProps {
   isOpen: boolean;
@@ -19,8 +20,22 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [profileTab, setProfileTab] = useState<'overview' | 'bio' | 'ventures' | 'stats'>('overview');
+  const [activeMobileView, setActiveMobileView] = useState<'commands' | 'profile'>('commands');
+  const [soundActive, setSoundActive] = useState(getSoundEnabled());
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    const handleSoundChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ enabled: boolean }>;
+      setSoundActive(customEvent.detail.enabled);
+    };
+    window.addEventListener('sound-change', handleSoundChange);
+    return () => {
+      window.removeEventListener('sound-change', handleSoundChange);
+    };
+  }, []);
 
   const commands: CommandItem[] = [
     {
@@ -29,7 +44,9 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
       category: 'PROFILE',
       shortcut: 'M',
       action: () => {
-        // Just focus the preview card
+        if (isMobile) {
+          setActiveMobileView('profile');
+        }
       },
     },
     {
@@ -88,25 +105,23 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
       category: 'VENTURES',
       shortcut: 'F',
       action: () => {
-        // Mock scroll to projects since link is #
         document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
         onClose();
       },
     },
     {
       id: 'action-sound',
-      title: `Toggle Audio System (${getSoundEnabled() ? 'DISABLE' : 'ENABLE'})`,
+      title: `Toggle Audio System (${soundActive ? 'DISABLE' : 'ENABLE'})`,
       category: 'ACTIONS',
       shortcut: 'S',
       action: () => {
-        const nextState = !getSoundEnabled();
+        const nextState = !soundActive;
         setSoundEnabled(nextState);
         playSound('toggle');
       },
     },
   ];
 
-  // Filter commands by query
   const filteredCommands = commands.filter((cmd) => {
     const term = query.toLowerCase();
     return (
@@ -116,21 +131,25 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
     );
   });
 
-  // Automatically select the profile card if query is 'muneef' or equivalent
   useEffect(() => {
     const term = query.toLowerCase().trim();
     if (term === 'muneef' || term === 'muhammad' || term === 'who is muneef' || term === 'who am i' || term === 'who i am') {
       const idx = filteredCommands.findIndex(c => c.id === 'muneef-profile');
-      if (idx !== -1) setSelectedIndex(idx);
+      if (idx !== -1) {
+        setSelectedIndex(idx);
+        if (isMobile) {
+          setActiveMobileView('profile');
+        }
+      }
     } else {
       setSelectedIndex(0);
     }
-  }, [query, filteredCommands.length]);
+  }, [query, filteredCommands.length, isMobile]);
 
-  // Entrance animations and key listeners
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      setActiveMobileView('commands');
       setTimeout(() => inputRef.current?.focus(), 50);
 
       gsap.fromTo(
@@ -151,7 +170,6 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
     };
   }, [isOpen]);
 
-  // Handle arrow keys & enter keys
   useEffect(() => {
     if (!isOpen) return;
 
@@ -198,24 +216,47 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
   const isProfileSelected = currentSelectedCommand?.id === 'muneef-profile';
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 md:p-10">
-      {/* Backdrop */}
+    <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-6 md:p-10">
       <div
         className="spotlight-backdrop absolute inset-0 bg-[#0c0a09]/80 backdrop-blur-md"
         onClick={handleClose}
       />
 
-      {/* Spotlight Window */}
       <div
         ref={modalRef}
-        className="relative max-w-[780px] w-full bg-[#171412]/95 border border-[#fafaf9]/10 rounded-xl shadow-2xl flex flex-col md:flex-row overflow-hidden h-[450px]"
+        className="relative max-w-[780px] w-full bg-[#171412]/95 border border-[#fafaf9]/10 rounded-xl shadow-2xl flex flex-col md:flex-row overflow-hidden h-[480px] md:h-[450px]"
         style={{
-          boxShadow: '0 30px 70px rgba(0, 0, 0, 0.7), 0 0 50px rgba(249, 115, 22, 0.05)',
+          boxShadow: '0 30px 70px rgba(0, 0, 0, 0.7), 0 0 50px hsl(var(--brand-accent)/0.05)',
         }}
       >
-        {/* Left Side: Search & Command List */}
-        <div className="flex-1 flex flex-col h-full border-r border-[#fafaf9]/5">
-          {/* Input field */}
+        {isMobile && (
+          <div className="flex bg-[#0c0a09]/80 border-b border-[#fafaf9]/5 shrink-0">
+            <button
+              onClick={() => {
+                setActiveMobileView('commands');
+                playSound('toggle');
+              }}
+              className={`flex-1 py-3 text-center text-[10px] font-mono uppercase font-bold border-b-2 transition-all duration-300 ${
+                activeMobileView === 'commands' ? 'border-brand text-brand' : 'border-transparent text-[#78716c]'
+              }`}
+            >
+              Commands
+            </button>
+            <button
+              onClick={() => {
+                setActiveMobileView('profile');
+                playSound('toggle');
+              }}
+              className={`flex-1 py-3 text-center text-[10px] font-mono uppercase font-bold border-b-2 transition-all duration-300 ${
+                activeMobileView === 'profile' ? 'border-brand text-brand' : 'border-transparent text-[#78716c]'
+              }`}
+            >
+              Profile Inspector {isProfileSelected && '●'}
+            </button>
+          </div>
+        )}
+
+        <div className={`flex-1 flex-col h-full border-r border-[#fafaf9]/5 ${isMobile && activeMobileView !== 'commands' ? 'hidden' : 'flex'}`}>
           <div className="px-5 py-4 border-b border-[#fafaf9]/5 flex items-center gap-3">
             <span className="text-[#a8a29e] text-[14px]" style={{ fontFamily: "'Space Mono', monospace" }}>
               $
@@ -238,7 +279,6 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
             </kbd>
           </div>
 
-          {/* List of items */}
           <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-0.5 scrollbar-thin">
             {filteredCommands.length > 0 ? (
               filteredCommands.map((cmd, idx) => {
@@ -256,7 +296,7 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
                     }}
                     className={`px-4 py-3 rounded-lg flex items-center justify-between cursor-pointer transition-colors duration-200 ${
                       isSelected
-                        ? 'bg-[#f97316]/10 text-[#f97316]'
+                        ? 'bg-brand/10 text-brand'
                         : 'text-[#a8a29e] hover:bg-[#fafaf9]/5 hover:text-[#fafaf9]'
                     }`}
                   >
@@ -264,7 +304,7 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
                       <span
                         className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${
                           isSelected
-                            ? 'border-[#f97316]/30 bg-[#f97316]/10 text-[#f97316]'
+                            ? 'border-brand/30 bg-brand/10 text-brand'
                             : 'border-[#78716c]/20 bg-[#fafaf9]/5 text-[#78716c]'
                         }`}
                         style={{ fontFamily: "'Space Mono', monospace" }}
@@ -289,35 +329,31 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
             )}
           </div>
 
-          {/* Bottom Info bar */}
           <div className="px-5 py-3 border-t border-[#fafaf9]/5 bg-[#0c0a09]/50 flex items-center justify-between text-[10px] text-[#78716c] font-mono">
             <span>↑↓ NAVIGATE // ENTER CHOOSE</span>
             <span>SEARCH CORE v1.0</span>
           </div>
         </div>
 
-        {/* Right Side: Profile Card / Who I Am Overlay (conditional on selection) */}
         <div
-          className={`w-full md:w-[320px] bg-[#0c0a09]/60 h-full flex flex-col transition-all duration-300 ${
-            isProfileSelected ? 'opacity-100 translate-x-0' : 'opacity-30 md:opacity-40 pointer-events-none md:pointer-events-auto'
-          }`}
+          className={`w-full md:w-[320px] bg-[#0c0a09]/60 h-full flex-col transition-all duration-300 ${
+            isMobile && activeMobileView !== 'profile' ? 'hidden' : 'flex'
+          } ${isProfileSelected ? 'opacity-100 translate-x-0' : 'opacity-30 md:opacity-40 pointer-events-none md:pointer-events-auto'}`}
         >
           {isProfileSelected ? (
             <div className="h-full flex flex-col p-6">
-              {/* Profile Card Header */}
               <div className="flex items-center gap-3 border-b border-[#fafaf9]/5 pb-4">
-                <div className="w-10 h-10 rounded-full border border-[#f97316]/30 bg-[#171412] flex items-center justify-center text-[#f97316] font-bold text-sm" style={{ fontFamily: "'Space Mono', monospace" }}>
+                <div className="w-10 h-10 rounded-full border border-brand/30 bg-[#171412] flex items-center justify-center text-brand font-bold text-sm" style={{ fontFamily: "'Space Mono', monospace" }}>
                   MM
                 </div>
                 <div>
                   <h4 className="text-[#fafaf9] text-[14px] font-bold tracking-wide">MUHAMMAD MUNEEF</h4>
-                  <span className="text-[#f97316] text-[10px] uppercase font-bold tracking-widest" style={{ fontFamily: "'Space Mono', monospace" }}>
+                  <span className="text-brand text-[10px] uppercase font-bold tracking-widest" style={{ fontFamily: "'Space Mono', monospace" }}>
                     FOUNDER // 14yo
                   </span>
                 </div>
               </div>
 
-              {/* Profile Tab Buttons */}
               <div className="grid grid-cols-4 gap-1 border-b border-[#fafaf9]/5 py-3 text-[9px] font-bold tracking-wider uppercase" style={{ fontFamily: "'Space Mono', monospace" }}>
                 {(['overview', 'bio', 'ventures', 'stats'] as const).map((tab) => (
                   <button
@@ -328,7 +364,7 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
                     }}
                     className={`py-1 text-center border-b-2 rounded-sm transition-all duration-300 ${
                       profileTab === tab
-                        ? 'border-[#f97316] text-[#f97316]'
+                        ? 'border-brand text-brand'
                         : 'border-transparent text-[#78716c] hover:text-[#a8a29e]'
                     }`}
                   >
@@ -337,7 +373,6 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
                 ))}
               </div>
 
-              {/* Profile Content Container */}
               <div className="flex-1 overflow-y-auto py-4 text-left scrollbar-thin">
                 {profileTab === 'overview' && (
                   <div className="text-[12px] text-[#a8a29e] leading-relaxed space-y-3">
@@ -347,7 +382,7 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
                     <p>
                       At just 14 years old, he balances secondary academics at <strong>GVEI</strong> with running multiple business ventures.
                     </p>
-                    <p className="text-[#f97316] font-semibold">
+                    <p className="text-brand font-semibold">
                       &bull; Srinagar, Kashmir, IN
                     </p>
                   </div>
@@ -388,7 +423,7 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
                     </div>
                     <div className="flex justify-between">
                       <span>STARTUPS:</span>
-                      <span className="text-[#f97316] font-bold">2 FOUNDED</span>
+                      <span className="text-brand font-bold">2 FOUNDED</span>
                     </div>
                     <div className="flex justify-between">
                       <span>MUN DEBATES:</span>

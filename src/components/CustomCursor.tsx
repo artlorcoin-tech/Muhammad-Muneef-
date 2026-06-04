@@ -115,7 +115,7 @@ export default function CustomCursor() {
     <div className="pointer-events-none fixed inset-0 z-[99999]">
       {/* Inner Dot */}
       <div
-        className="fixed -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#f97316] rounded-full transition-transform duration-200"
+        className="fixed -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-brand rounded-full transition-transform duration-200"
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -125,15 +125,15 @@ export default function CustomCursor() {
 
       {/* Outer Inertial Ring */}
       <div
-        className="fixed -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#f97316] transition-all duration-300 ease-out"
+        className="fixed -translate-x-1/2 -translate-y-1/2 rounded-full border border-brand transition-all duration-300 ease-out"
         style={{
           left: `${ringPosition.x}px`,
           top: `${ringPosition.y}px`,
           width: isHovered ? '40px' : '22px',
           height: isHovered ? '40px' : '22px',
-          backgroundColor: isHovered ? 'rgba(249, 115, 22, 0.08)' : 'transparent',
-          borderColor: isHovered ? '#f97316' : 'rgba(249, 115, 22, 0.5)',
-          boxShadow: isHovered ? '0 0 15px rgba(249, 115, 22, 0.2)' : 'none',
+          backgroundColor: isHovered ? 'hsl(var(--brand-accent)/0.08)' : 'transparent',
+          borderColor: isHovered ? 'hsl(var(--brand-accent))' : 'hsl(var(--brand-accent)/0.5)',
+          boxShadow: isHovered ? '0 0 15px hsl(var(--brand-accent)/0.2)' : 'none',
         }}
       />
     </div>

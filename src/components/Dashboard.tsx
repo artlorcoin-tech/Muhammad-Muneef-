@@ -63,7 +63,7 @@ export default function Dashboard() {
             onClick={() => handleTabChange('talent')}
             className={`px-4 py-2 text-[11px] font-bold uppercase tracking-wider rounded-md transition-all duration-300 ${
               activeTab === 'talent'
-                ? 'bg-[#f97316] text-[#0c0a09]'
+                ? 'bg-brand text-[#0c0a09]'
                 : 'text-[#a8a29e] hover:text-[#fafaf9]'
             }`}
             style={{ fontFamily: "'Space Mono', monospace" }}
@@ -74,7 +74,7 @@ export default function Dashboard() {
             onClick={() => handleTabChange('growth')}
             className={`px-4 py-2 text-[11px] font-bold uppercase tracking-wider rounded-md transition-all duration-300 ${
               activeTab === 'growth'
-                ? 'bg-[#f97316] text-[#0c0a09]'
+                ? 'bg-brand text-[#0c0a09]'
                 : 'text-[#a8a29e] hover:text-[#fafaf9]'
             }`}
             style={{ fontFamily: "'Space Mono', monospace" }}
@@ -104,14 +104,14 @@ export default function Dashboard() {
               <Radar
                 name="Muneef Capabilities"
                 dataKey="rating"
-                stroke="#f97316"
-                fill="#f97316"
+                stroke="hsl(var(--brand-accent))"
+                fill="hsl(var(--brand-accent))"
                 fillOpacity={0.2}
               />
               <Tooltip
                 contentStyle={{
                   backgroundColor: '#171412',
-                  border: '1px solid rgba(249, 115, 22, 0.2)',
+                  border: '1px solid hsl(var(--brand-accent) / 0.2)',
                   borderRadius: '6px',
                   color: '#fafaf9',
                   fontFamily: "'Space Mono', monospace",
@@ -142,7 +142,7 @@ export default function Dashboard() {
               <Tooltip
                 contentStyle={{
                   backgroundColor: '#171412',
-                  border: '1px solid rgba(249, 115, 22, 0.2)',
+                  border: '1px solid hsl(var(--brand-accent) / 0.2)',
                   borderRadius: '8px',
                   color: '#fafaf9',
                   fontFamily: "'Inter', sans-serif",
@@ -159,7 +159,7 @@ export default function Dashboard() {
               <Line
                 type="monotone"
                 dataKey="Artlor"
-                stroke="#f97316"
+                stroke="hsl(var(--brand-accent))"
                 activeDot={{ r: 6 }}
                 strokeWidth={2}
                 name="Artlor Users"
@@ -191,7 +191,7 @@ export default function Dashboard() {
           <span className="text-[10px] text-[#78716c] uppercase tracking-wider block" style={{ fontFamily: "'Space Mono', monospace" }}>
             Monthly Growth Rate
           </span>
-          <span className="text-[#f97316] text-lg font-bold" style={{ fontFamily: "'Clash Display', sans-serif" }}>
+          <span className="text-brand text-lg font-bold" style={{ fontFamily: "'Clash Display', sans-serif" }}>
             +40% MoM
           </span>
         </div>

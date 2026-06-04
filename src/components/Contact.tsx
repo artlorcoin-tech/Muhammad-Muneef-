@@ -59,7 +59,7 @@ export default function Contact() {
       <div ref={contentRef} className="max-w-[1200px] mx-auto text-center">
         {/* Section label */}
         <span
-          className="block text-[#f97316] text-[12px] uppercase tracking-[0.08em]"
+          className="block text-brand text-[12px] uppercase tracking-[0.08em]"
           style={{ fontFamily: "'Space Mono', monospace" }}
         >
           (004) CONTACT
@@ -91,7 +91,7 @@ export default function Contact() {
         <div className="mt-12">
           <a
             href="mailto:muhammadmuneef2928@gmail.com"
-            className="inline-block text-[#f97316] border border-[#f97316] px-12 py-[18px] transition-all duration-300 hover:bg-[#f97316] hover:text-[#0c0a09]"
+            className="inline-block text-brand border border-brand px-12 py-[18px] transition-all duration-300 hover:bg-brand hover:text-[#0c0a09]"
             style={{
               fontFamily: "'Space Mono', monospace",
               fontSize: '14px',
@@ -112,7 +112,7 @@ export default function Contact() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`Visit ${link.label.charAt(0) + link.label.slice(1).toLowerCase()} profile`}
-              className="text-[#a8a29e] hover:text-[#f97316] transition-colors duration-300 text-[12px] uppercase tracking-[0.08em]"
+              className="text-[#a8a29e] hover:text-brand transition-colors duration-300 text-[12px] uppercase tracking-[0.08em]"
               style={{ fontFamily: "'Space Mono', monospace" }}
             >
               {link.label}

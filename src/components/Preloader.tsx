@@ -92,7 +92,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             <div
               key={index}
               className={`text-[12px] leading-relaxed transition-all duration-300 ${
-                index === logs.length - 1 ? 'text-[#f97316] log-pulse font-semibold' : 'text-[#a8a29e]'
+                index === logs.length - 1 ? 'text-brand log-pulse font-semibold' : 'text-[#a8a29e]'
               }`}
             >
               <span className="text-[#fafaf9]/20 mr-2">&gt;</span> {log}
@@ -107,7 +107,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
               {percent < 100 ? 'INITIALIZING INTERACTIVE ENVIRONMENT' : 'COMPILATION COMPLETE'}
             </span>
             <span
-              className="text-[#f97316] font-bold"
+              className="text-brand font-bold"
               style={{ fontSize: 'clamp(28px, 6vw, 48px)', lineHeight: 0.9 }}
             >
               {percent}%
@@ -117,7 +117,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           {/* Loading bar */}
           <div className="w-full h-[3px] bg-[#fafaf9]/5 relative overflow-hidden rounded">
             <div
-              className="absolute left-0 top-0 h-full bg-[#f97316] transition-all duration-100 ease-out shadow-[0_0_12px_#f97316]"
+              className="absolute left-0 top-0 h-full bg-brand transition-all duration-100 ease-out shadow-[0_0_12px_hsl(var(--brand-accent))]"
               style={{ width: `${percent}%` }}
             />
           </div>
@@ -128,7 +128,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           {isReady && (
             <button
               onClick={handleLaunch}
-              className="px-10 py-4 border border-[#f97316] text-[#f97316] hover:bg-[#f97316] hover:text-[#0c0a09] transition-all duration-300 font-bold uppercase tracking-wider text-[12px] shadow-[0_0_20px_rgba(249,115,22,0.15)] hover:shadow-[0_0_30px_rgba(249,115,22,0.4)] animate-pulse"
+              className="px-10 py-4 border border-brand text-brand hover:bg-brand hover:text-[#0c0a09] transition-all duration-300 font-bold uppercase tracking-wider text-[12px] shadow-[0_0_20px_hsl(var(--brand-accent)/0.15)] hover:shadow-[0_0_30px_hsl(var(--brand-accent)/0.4)] animate-pulse"
               style={{ animationDuration: '2s' }}
             >
               Launch Core System

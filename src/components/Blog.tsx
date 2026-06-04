@@ -142,7 +142,7 @@ export default function Blog() {
           {/* Header */}
           <div ref={headerRef}>
             <span
-              className="block text-[#f97316] text-[12px] uppercase tracking-[0.08em] mb-10"
+              className="block text-brand text-[12px] uppercase tracking-[0.08em] mb-10"
               style={{ fontFamily: "'Space Mono', monospace" }}
             >
               (003) BLOG
@@ -184,13 +184,13 @@ export default function Blog() {
                 onMouseEnter={(e) => {
                   (e.currentTarget as HTMLElement).style.transform = 'translateX(8px)';
                   const title = e.currentTarget.querySelector('.blog-title');
-                  if (title) title.classList.add('text-[#f97316]');
+                  if (title) title.classList.add('text-brand');
                   playSound('hover');
                 }}
                 onMouseLeave={(e) => {
                   (e.currentTarget as HTMLElement).style.transform = 'translateX(0)';
                   const title = e.currentTarget.querySelector('.blog-title');
-                  if (title) title.classList.remove('text-[#f97316]');
+                  if (title) title.classList.remove('text-brand');
                 }}
               >
                 {/* Date */}
@@ -214,7 +214,7 @@ export default function Blog() {
                 </h3>
 
                 {/* Arrow */}
-                <span className="ml-auto text-[#a8a29e] text-[18px] group-hover:text-[#f97316] transition-colors duration-300" aria-hidden="true">
+                <span className="ml-auto text-[#a8a29e] text-[18px] group-hover:text-brand transition-colors duration-300" aria-hidden="true">
                   &rarr;
                 </span>
               </article>

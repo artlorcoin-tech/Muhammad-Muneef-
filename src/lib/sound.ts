@@ -6,24 +6,35 @@ export function setSoundEnabled(enabled: boolean) {
   if (enabled && !audioCtx) {
     try {
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-      audioCtx = new AudioContextClass();
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
     } catch (e) {
       console.warn("AudioContext not supported in this browser:", e);
     }
   }
+  // Dispatch event so all components (Navigation, Spotlight, etc.) sync their state
+  window.dispatchEvent(new CustomEvent('sound-change', { detail: { enabled } }));
 }
 
 export function getSoundEnabled() {
   return isSoundEnabled;
 }
 
-function getAudioContext(): AudioContext {
-  if (!audioCtx) {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-    audioCtx = new AudioContextClass();
-  }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
+function getAudioContext(): AudioContext | null {
+  try {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().catch((err) => console.warn("Failed to resume AudioContext:", err));
+    }
+  } catch (e) {
+    console.warn("Failed to retrieve AudioContext:", e);
+    return null;
   }
   return audioCtx;
 }
@@ -32,6 +43,7 @@ export function playSound(type: 'click' | 'hover' | 'type' | 'success' | 'boot' 
   if (!isSoundEnabled) return;
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
     const now = ctx.currentTime;
     
     if (type === 'click') {
@@ -141,6 +153,7 @@ export function playNote(frequency: number, type: OscillatorType = 'sine', durat
   if (!isSoundEnabled) return;
   try {
     const ctx = getAudioContext();
+    if (!ctx) return;
     const now = ctx.currentTime;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();

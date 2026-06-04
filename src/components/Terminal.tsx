@@ -41,6 +41,7 @@ export default function Terminal() {
         '  theme     - Change the accent color theme (orange, cyan, green, matrix)',
         '  matrix    - Toggle green digital code rain screen',
         '  synth     - Open interactive digital soundboard synthesizer',
+        '  chat      - Ask Muneef\'s AI assistant a question (e.g. chat startups)',
         '  hack      - Run network diagnostic security test',
         '  clear     - Clear the terminal history',
         '  secret    - ???',
@@ -167,6 +168,53 @@ export default function Terminal() {
     setHistory(prev => [...prev, { text: `guest@muneef:~$ ${input}`, type: 'input' }]);
     setInput('');
 
+    // Special routing for chat command
+    if (cmd === 'chat') {
+      if (!arg) {
+        printLines([
+          '🤖 [Muneef AI Assistant Command Console]',
+          '  Ask me questions about my profile! Examples:',
+          '    chat age       - Display my current age',
+          '    chat startups  - Tell me about Artlor and Finsure',
+          '    chat kashmir   - Why Srinagar is special to me',
+          '    chat debate    - Learn about my MUN debate records',
+          '    chat custom    - Type any other question (e.g. chat how are you)',
+        ], 'success');
+      } else if (arg.includes('age') || arg.includes('old')) {
+        printLines([
+          '🤖 AI Response:',
+          '  "I am 14 years old (born in 2012), balancing my secondary education',
+          '   at GVEI with active software development and startup execution."',
+        ], 'success');
+      } else if (arg.includes('startup') || arg.includes('artlor') || arg.includes('finsure')) {
+        printLines([
+          '🤖 AI Response:',
+          '  "I founded Artlor to connect native Kashmiri artists with global collectors,',
+          '   and Trust Finsure Accounting to simplify advisory/finance for businesses."',
+        ], 'success');
+      } else if (arg.includes('kashmir') || arg.includes('srinagar')) {
+        printLines([
+          '🤖 AI Response:',
+          '  "I was born and raised in Srinagar, Kashmir. The scenic beauty,',
+          '   traditional art forms, and local challenges inspire me to build daily."',
+        ], 'success');
+      } else if (arg.includes('debate') || arg.includes('mun')) {
+        printLines([
+          '🤖 AI Response:',
+          '  "I\'m a 3-time MUN Best Delegate award winner and national-level debater.',
+          '   Debating has taught me research, lobbying, and structural communication."',
+        ], 'success');
+      } else {
+        printLines([
+          '🤖 AI Response:',
+          `  "Analyzing query: '${arg}'...`,
+          '   That\'s a great question! I am constantly learning and building new web apps.',
+          '   Let\'s connect via email (muhammadmuneef2928@gmail.com) to discuss this further!"',
+        ], 'success');
+      }
+      return;
+    }
+
     // Special argument routing for theme command
     if (cmd === 'theme') {
       if (['cyan', 'green', 'orange', 'matrix'].includes(arg)) {
@@ -229,7 +277,7 @@ export default function Terminal() {
   return (
     <div
       onClick={focusInput}
-      className="w-full max-w-[650px] mx-auto rounded-lg border border-accent/20 bg-[#171412]/80 backdrop-blur-md shadow-2xl overflow-hidden font-mono text-[14px]"
+      className="w-full max-w-[650px] mx-auto rounded-lg border border-brand/20 bg-[#171412]/80 backdrop-blur-md shadow-2xl overflow-hidden font-mono text-[14px]"
       style={{
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
       }}
@@ -250,13 +298,13 @@ export default function Terminal() {
       {/* Terminal Output */}
       <div
         ref={containerRef}
-        className="p-5 h-[280px] overflow-y-auto flex flex-col gap-2 scrollbar-thin scrollbar-thumb-accent/20"
+        className="p-5 h-[280px] overflow-y-auto flex flex-col gap-2 scrollbar-thin scrollbar-thumb-brand/20"
       >
         {history.map((line, idx) => {
           let color = 'text-[#fafaf9]';
           if (line.type === 'system') color = 'text-[#78716c]';
           if (line.type === 'error') color = 'text-[#ef4444]';
-          if (line.type === 'success') color = 'text-accent';
+          if (line.type === 'success') color = 'text-brand';
           if (line.type === 'input') color = 'text-[#a8a29e] font-semibold';
           
           return (
@@ -282,7 +330,7 @@ export default function Terminal() {
                   e.stopPropagation();
                   playNote(n.freq, 'sine');
                 }}
-                className="flex flex-col items-center justify-between py-2 px-1.5 min-w-[34px] rounded border border-accent/20 bg-[#171412] hover:bg-accent hover:text-[#0c0a09] transition-all duration-150 active:scale-90 interactive-item text-[#fafaf9]"
+                className="flex flex-col items-center justify-between py-2 px-1.5 min-w-[34px] rounded border border-brand/20 bg-[#171412] hover:bg-brand hover:text-[#0c0a09] transition-all duration-150 active:scale-90 interactive-item text-[#fafaf9]"
               >
                 <span className="text-[10px] font-bold font-mono">{n.note}</span>
                 <span className="text-[8px] opacity-40 font-mono mt-1 uppercase">{n.key}</span>
@@ -297,7 +345,7 @@ export default function Terminal() {
         onSubmit={handleCommand}
         className="flex items-center gap-2 px-5 py-3 border-t border-[#fafaf9]/5 bg-[#0c0a09]/40"
       >
-        <span className="text-accent font-semibold shrink-0">guest@muneef:~$</span>
+        <span className="text-brand font-semibold shrink-0">guest@muneef:~$</span>
         <input
           ref={inputRef}
           type="text"
