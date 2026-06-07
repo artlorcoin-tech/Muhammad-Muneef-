@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ResponsiveContainer,
   RadarChart,
@@ -36,11 +36,52 @@ const growthData = [
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<'talent' | 'growth'>('talent');
+  const [currentTime, setCurrentTime] = useState('');
+  const [visitors, setVisitors] = useState(4);
+  const [latency, setLatency] = useState(24);
 
   const handleTabChange = (tab: 'talent' | 'growth') => {
     setActiveTab(tab);
     playSound('toggle');
   };
+
+  useEffect(() => {
+    // Clock in Srinagar/Kashmir Time (Asia/Kolkata GMT+5:30)
+    const updateTime = () => {
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      };
+      const formatter = new Intl.DateTimeFormat('en-US', options);
+      setCurrentTime(formatter.format(new Date()));
+    };
+
+    updateTime();
+    const clockTimer = setInterval(updateTime, 1000);
+
+    // Visitors simulation (fluctuates between 3 and 7 readers)
+    const visitorsTimer = setInterval(() => {
+      setVisitors((prev) => {
+        const delta = Math.random() > 0.5 ? 1 : -1;
+        const next = prev + delta;
+        return next >= 3 && next <= 7 ? next : prev;
+      });
+    }, 6000);
+
+    // Ping latency simulation (between 15ms and 35ms)
+    const pingTimer = setInterval(() => {
+      setLatency(() => Math.floor(Math.random() * 20) + 15);
+    }, 4000);
+
+    return () => {
+      clearInterval(clockTimer);
+      clearInterval(visitorsTimer);
+      clearInterval(pingTimer);
+    };
+  }, []);
 
   return (
     <div className="w-full rounded-xl border border-[#fafaf9]/5 bg-[#171412]/50 backdrop-blur-md overflow-hidden p-6 sm:p-8 mt-12 shadow-2xl">
@@ -125,9 +166,6 @@ export default function Dashboard() {
             <LineChart
               data={growthData}
               margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
-              onMouseMove={() => {
-                // Optional: add extremely low-frequency hover feedback on hover if wanted
-              }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(168, 162, 158, 0.05)" />
               <XAxis
@@ -175,6 +213,31 @@ export default function Dashboard() {
             </LineChart>
           </ResponsiveContainer>
         )}
+      </div>
+
+      {/* Live System Status Sub-Console */}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#0c0a09]/60 border border-[#fafaf9]/5 rounded-lg p-4 font-mono text-[11px] text-[#a8a29e]">
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+          </span>
+          <span>NODE CLOCK: <span className="text-[#fafaf9]">{currentTime || '12:00:00 PM'}</span> (KASHMIR/IN)</span>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f97316]/75 opacity-75" style={{ backgroundColor: 'hsl(var(--brand-accent))' }}></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-brand"></span>
+          </span>
+          <span>CONNECTIONS: <span className="text-[#fafaf9]">{visitors} Active Readers</span></span>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+          </span>
+          <span>LINK LATENCY: <span className="text-[#fafaf9]">{latency}ms</span> (HTTP/2 OK)</span>
+        </div>
       </div>
 
       {/* Footer statistics breakdown */}

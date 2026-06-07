@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { playSound } from '../lib/sound';
+import { Send, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,6 +16,11 @@ const socialLinks = [
 export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [spamBlocked, setSpamBlocked] = useState(false);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -39,10 +46,81 @@ export default function Contact() {
       );
     }
 
+    // Check rate limit spam prevention
+    const lastSent = localStorage.getItem('muneef_contact_last_sent');
+    if (lastSent) {
+      const diff = Date.now() - parseInt(lastSent, 10);
+      if (diff < 60000) {
+        setSpamBlocked(true);
+      }
+    }
+
     return () => {
       ScrollTrigger.getAll().forEach((t) => t.kill());
     };
   }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (spamBlocked) {
+      playSound('toggle');
+      setErrorMessage('Spam prevention active. Please wait 60 seconds between submissions.');
+      setStatus('error');
+      return;
+    }
+
+    if (!formData.name || !formData.email || !formData.message) {
+      playSound('toggle');
+      setErrorMessage('Please fill in all required fields (Name, Email, Message).');
+      setStatus('error');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      playSound('toggle');
+      setErrorMessage('Please provide a valid email address.');
+      setStatus('error');
+      return;
+    }
+
+    setStatus('submitting');
+    playSound('click');
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: 'YOUR_ACCESS_KEY_HERE', // User should replace this with their actual key
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject || 'Direct Portfolio Inquiry',
+          message: formData.message,
+          from_name: 'Muhammad Muneef Portfolio',
+        }),
+      });
+
+      if (response.ok) {
+        setStatus('success');
+        playSound('success');
+        localStorage.setItem('muneef_contact_last_sent', Date.now().toString());
+        setSpamBlocked(true);
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        throw new Error('API submission failed.');
+      }
+    } catch (err) {
+      setStatus('error');
+      playSound('toggle');
+      setErrorMessage('Could not transmit message. Please send direct email instead.');
+    }
+  };
 
   return (
     <section
@@ -62,7 +140,7 @@ export default function Contact() {
           className="block text-brand text-[12px] uppercase tracking-[0.08em]"
           style={{ fontFamily: "'Space Mono', monospace" }}
         >
-          (004) CONTACT
+          (007) CONTACT
         </span>
 
         {/* Heading */}
@@ -87,20 +165,109 @@ export default function Contact() {
           I&rsquo;m always open to meaningful conversations.
         </p>
 
-        {/* CTA Button */}
-        <div className="mt-12">
-          <a
-            href="mailto:muhammadmuneef2928@gmail.com"
-            className="inline-block text-brand border border-brand px-12 py-[18px] transition-all duration-300 hover:bg-brand hover:text-[#0c0a09]"
-            style={{
-              fontFamily: "'Space Mono', monospace",
-              fontSize: '14px',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-            }}
-          >
-            GET IN TOUCH
-          </a>
+        {/* Interactive Form Component */}
+        <div className="max-w-[600px] mx-auto mt-12 bg-[#171412]/50 border border-[#fafaf9]/5 rounded-xl p-6 sm:p-8 backdrop-blur-md shadow-2xl text-left">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {status === 'success' && (
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-sm">
+                <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                <span>Transmission received successfully. I will inspect the logs and contact you shortly.</span>
+              </div>
+            )}
+
+            {status === 'error' && (
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-[10px] text-[#78716c] uppercase tracking-[0.08em] font-mono mb-2" style={{ fontFamily: "'Space Mono', monospace" }}>
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter name"
+                  required
+                  className="w-full bg-[#0c0a09]/70 border border-[#fafaf9]/10 rounded-lg px-4 py-3 text-sm text-[#fafaf9] placeholder-[#57534e] focus:outline-none focus:border-brand/40 focus:ring-1 focus:ring-brand/20 transition-all font-mono"
+                  style={{ fontFamily: "'Space Mono', monospace" }}
+                />
+              </div>
+              <div>
+                <label className="block text-[10px] text-[#78716c] uppercase tracking-[0.08em] font-mono mb-2" style={{ fontFamily: "'Space Mono', monospace" }}>
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter email"
+                  required
+                  className="w-full bg-[#0c0a09]/70 border border-[#fafaf9]/10 rounded-lg px-4 py-3 text-sm text-[#fafaf9] placeholder-[#57534e] focus:outline-none focus:border-brand/40 focus:ring-1 focus:ring-brand/20 transition-all font-mono"
+                  style={{ fontFamily: "'Space Mono', monospace" }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[10px] text-[#78716c] uppercase tracking-[0.08em] font-mono mb-2" style={{ fontFamily: "'Space Mono', monospace" }}>
+                Subject
+              </label>
+              <input
+                type="text"
+                name="subject"
+                value={formData.subject}
+                onChange={handleChange}
+                placeholder="Enter subject"
+                className="w-full bg-[#0c0a09]/70 border border-[#fafaf9]/10 rounded-lg px-4 py-3 text-sm text-[#fafaf9] placeholder-[#57534e] focus:outline-none focus:border-brand/40 focus:ring-1 focus:ring-brand/20 transition-all font-mono"
+                style={{ fontFamily: "'Space Mono', monospace" }}
+              />
+            </div>
+
+            <div>
+              <label className="block text-[10px] text-[#78716c] uppercase tracking-[0.08em] font-mono mb-2" style={{ fontFamily: "'Space Mono', monospace" }}>
+                Message *
+              </label>
+              <textarea
+                name="message"
+                value={formData.message}
+                onChange={handleChange}
+                placeholder="Enter your message..."
+                required
+                rows={5}
+                className="w-full bg-[#0c0a09]/70 border border-[#fafaf9]/10 rounded-lg px-4 py-3 text-sm text-[#fafaf9] placeholder-[#57534e] focus:outline-none focus:border-brand/40 focus:ring-1 focus:ring-brand/20 transition-all font-mono resize-none"
+                style={{ fontFamily: "'Space Mono', monospace" }}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={status === 'submitting'}
+              className="w-full text-brand border border-brand py-3.5 transition-all duration-300 hover:bg-brand hover:text-[#0c0a09] disabled:border-[#78716c] disabled:text-[#78716c] disabled:hover:bg-transparent flex items-center justify-center gap-2 uppercase tracking-[0.1em] text-xs font-mono font-bold"
+              style={{ fontFamily: "'Space Mono', monospace" }}
+            >
+              {status === 'submitting' ? (
+                <>
+                  TRANSMITTING <Loader className="w-4 h-4 animate-spin" />
+                </>
+              ) : (
+                <>
+                  TRANSMIT SIGNAL <Send className="w-3.5 h-3.5" />
+                </>
+              )}
+            </button>
+          </form>
+          <div className="mt-4 text-center">
+            <span className="text-[10px] text-[#57534e] font-mono">
+              Or fallback direct email: <a href="mailto:muhammadmuneef2928@gmail.com" className="text-brand hover:underline">muhammadmuneef2928@gmail.com</a>
+            </span>
+          </div>
         </div>
 
         {/* Social links */}

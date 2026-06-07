@@ -5,8 +5,11 @@ import { playSound, getSoundEnabled, setSoundEnabled } from '../lib/sound';
 
 const navLinks = [
   { label: 'About', href: '#about' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Credentials', href: '#certifications' },
   { label: 'Projects', href: '#projects' },
   { label: 'Blog', href: '#blog' },
+  { label: 'FAQ', href: '#faq' },
   { label: 'Contact', href: '#contact' },
 ];
 

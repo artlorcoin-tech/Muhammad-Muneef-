@@ -36,16 +36,16 @@ const events: TimelineEvent[] = [
     year: '2025',
     title: 'Founded Trust Finsure Accounting & Debate Success',
     icon: <Award className="w-5 h-5 text-[#fafaf9]" />,
-    subtitle: 'Co-Founder & National Debater',
-    description: 'Launched streamlined financial consulting services. Participated in national debate tournaments and secured multiple speaking awards.',
+    subtitle: 'Co-Founder & School Speaking Winner',
+    description: 'Launched streamlined financial consulting services. Participated in school-level debate tournaments and secured multiple speaking awards.',
     freq: 659.25, // E5
   },
   {
     year: '2026',
     title: '3x MUN Best Delegate & Debating Excellence',
     icon: <Milestone className="w-5 h-5 text-[#fafaf9]" />,
-    subtitle: 'National Debater & MUN Lead',
-    description: 'Participated in prestigious Model United Nations (MUN) conferences and national-level debate competitions, securing three consecutive Best Delegate awards and leading regional speaker committees.',
+    subtitle: 'School Speaker & MUN Lead',
+    description: 'Participated in prestigious Model United Nations (MUN) conferences and school-level debate competitions, securing three consecutive Best Delegate awards and leading regional speaker committees.',
     freq: 880, // A5
   },
 ];

@@ -6,8 +6,11 @@ import InkEffect from './components/InkEffect';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import About from './components/About';
+import Skills from './components/Skills';
+import Certifications from './components/Certifications';
 import Projects from './components/Projects';
 import Blog from './components/Blog';
+import FAQ from './components/FAQ';
 import Contact from './components/Contact';
 import Preloader from './components/Preloader';
 import CustomCursor from './components/CustomCursor';
@@ -104,8 +107,11 @@ export default function App() {
       <main id="main-content" className="relative" style={{ zIndex: 1 }}>
         <Hero />
         <About />
+        <Skills />
+        <Certifications />
         <Projects />
         <Blog />
+        <FAQ />
         <Contact />
       </main>
     </>

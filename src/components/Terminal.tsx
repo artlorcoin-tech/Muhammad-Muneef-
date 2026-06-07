@@ -201,7 +201,7 @@ export default function Terminal() {
       } else if (arg.includes('debate') || arg.includes('mun')) {
         printLines([
           '🤖 AI Response:',
-          '  "I\'m a 3-time MUN Best Delegate award winner and national-level debater.',
+          '  "I\'m a 3-time MUN Best Delegate award winner and school speaking championship winner.',
           '   Debating has taught me research, lobbying, and structural communication."',
         ], 'success');
       } else {

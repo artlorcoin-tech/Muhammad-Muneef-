@@ -189,7 +189,7 @@ export default function Projects() {
               className="block text-brand text-[12px] uppercase tracking-[0.08em] mb-10"
               style={{ fontFamily: "'Space Mono', monospace" }}
             >
-              (002) PROJECTS
+              (003) PROJECTS
             </span>
             <h2
               className="text-[#fafaf9]"

@@ -1,8 +1,24 @@
+# robots.txt — Muhammad Muneef Portfolio
+# https://muhammadmuneef.com
+
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /_next/
+Disallow: /node_modules/
 
-# Sitemap
+# Sitemap location
 Sitemap: https://muhammadmuneef.com/sitemap.xml
 
 # Crawl-delay (optional, for polite crawlers)
+Crawl-delay: 1
+
+# Google-specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing
+User-agent: Bingbot
+Allow: /
 Crawl-delay: 1

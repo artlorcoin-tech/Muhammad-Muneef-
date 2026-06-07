@@ -60,10 +60,30 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
       },
     },
     {
+      id: 'nav-skills',
+      title: 'Navigate to Skills (Tech Stack & Tools)',
+      category: 'NAVIGATION',
+      shortcut: '2',
+      action: () => {
+        document.getElementById('skills')?.scrollIntoView({ behavior: 'smooth' });
+        onClose();
+      },
+    },
+    {
+      id: 'nav-certifications',
+      title: 'Navigate to Credentials (Awards & Recognitions)',
+      category: 'NAVIGATION',
+      shortcut: '3',
+      action: () => {
+        document.getElementById('certifications')?.scrollIntoView({ behavior: 'smooth' });
+        onClose();
+      },
+    },
+    {
       id: 'nav-projects',
       title: 'Navigate to Projects (Artlor, Finsure)',
       category: 'NAVIGATION',
-      shortcut: '2',
+      shortcut: '4',
       action: () => {
         document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
         onClose();
@@ -73,9 +93,19 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
       id: 'nav-blog',
       title: 'Navigate to Blog (Thoughts & Essays)',
       category: 'NAVIGATION',
-      shortcut: '3',
+      shortcut: '5',
       action: () => {
         document.getElementById('blog')?.scrollIntoView({ behavior: 'smooth' });
+        onClose();
+      },
+    },
+    {
+      id: 'nav-faq',
+      title: 'Navigate to FAQ (Questions & Answers)',
+      category: 'NAVIGATION',
+      shortcut: '6',
+      action: () => {
+        document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
         onClose();
       },
     },
@@ -83,7 +113,7 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
       id: 'nav-contact',
       title: 'Navigate to Contact (Get in Touch)',
       category: 'NAVIGATION',
-      shortcut: '4',
+      shortcut: '7',
       action: () => {
         document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
         onClose();

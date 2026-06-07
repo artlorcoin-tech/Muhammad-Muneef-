@@ -19,15 +19,23 @@ const blogPosts: BlogPost[] = [
     date: 'MAY 18, 2026',
     title: 'How I Built Artlor from Scratch',
     category: 'Entrepreneurship',
-    readTime: '5 MIN',
+    readTime: '7 MIN',
     content: [
-      'Artlor started not as a business concept, but as a realization. Walking through the markets of Kashmir, I was surrounded by incredible, world-class craftsmanship—hand-painted paper-mache, intricate wood carvings, and silk carpets that take months to complete. Yet, many local artisans struggled to make a sustainable living because of their isolation from the global art market. I realized that technology could be the bridge.',
-      '### The Vision & Tech Stack',
-      'At 14, I decided to build a platform that would showcase this rich heritage directly to global buyers. I chose a modern, high-performance web stack to handle it: React and TypeScript for a fluid, error-free user experience, Vite for blazing fast builds, and Tailwind CSS for custom responsive layouts. I designed a clean, minimalist storefront that prioritized the visual beauty of the artwork, ensuring fast image load speeds through preloading, WebP rendering, and lazy loading strategies.',
-      '### Overcoming Barriers',
-      'One of the biggest hurdles was credibility. When people find out the developer and founder is a teenager, they are often skeptical. I had to make sure the platform looked and functioned with absolute professional-grade quality. I integrated secure payment gateways and created an intuitive vendor dashboard allowing Kashmiri artists, who might not be highly tech-savvy, to easily upload and manage their listings.',
-      '&gt; Artlor was built to prove that geographic borders and age do not restrict your ability to build meaningful platforms.',
-      'Today, Artlor connects scenic local artwork with enthusiasts worldwide, helping preserve traditional crafts and providing local artists with the global recognition they deserve.'
+      'I am Muhammad Muneef, a 14-year-old tech entrepreneur from Kashmir, India — and Artlor is my answer to a problem I watched unfold my entire childhood. Walking through the bustling markets of Srinagar and the quieter lanes of rural Kashmir, I was surrounded by breathtaking craftsmanship: hand-painted papier-mâché boxes, intricate walnut wood carvings, and pashmina shawls that take months to weave by hand. Yet most of these artisans — many of them generational masters — were barely making a living. Their art was world-class; their reach was not. That disconnect ignited something in me.',
+      '### The Spark: Why I Started Artlor',
+      'The idea for Artlor came during a school break in early 2025. I was helping my family visit a local artisan in downtown Srinagar who carved wooden trays. His work was museum-worthy, but he told me he had never sold a single piece online. He didn\'t know how. That night, I opened my laptop and started wireframing what would become Artlor — a digital art marketplace designed to bridge the gap between Kashmir\'s hidden creative talent and the global audience that would love to own their work.',
+      '### Choosing the Tech Stack',
+      'At 14, I was already comfortable with React and TypeScript from building smaller projects. For Artlor, I needed a stack that could handle a dynamic product catalog, image-heavy pages, and fast load times on mobile devices — since many Kashmiri users access the web on phones with modest internet speeds. I chose React with TypeScript for type-safe, component-driven development. Vite gave me blazing-fast builds and hot module replacement during development. I used Tailwind CSS for responsive, utility-first styling that let me prototype rapidly without fighting CSS specificity wars.',
+      'For the backend, I evaluated several options before settling on a serverless architecture with API routes. I designed a clean, RESTful API layer for product listings, artist profiles, and order management. Image optimization was critical — I implemented WebP conversion, lazy loading with intersection observers, and responsive srcset attributes to ensure artwork loaded crisp and fast on any device.',
+      '### Overcoming the Age Barrier',
+      'Here is the reality nobody talks about: when you are 14 and you tell someone you built a production-grade marketplace, they do not believe you. I faced this skepticism from potential partner artists, payment gateway providers, and even well-meaning adults who thought I should "focus on studies first." My response was simple — I let the product speak. I made sure Artlor looked, felt, and performed at a level indistinguishable from platforms built by full teams of adult engineers. Every pixel, every interaction, every page load time was meticulously optimized.',
+      'I integrated secure payment processing, built an intuitive vendor dashboard that even non-tech-savvy artisans could navigate, and added multi-language support planning for Urdu and Kashmiri interfaces in the future. Accessibility was also a priority — I followed WCAG guidelines to ensure the platform was usable by everyone.',
+      '### The Design Philosophy',
+      'Artlor\'s design language is minimalist by intention. The artwork is the hero of every page. I used a muted, warm color palette — deep charcoals, soft creams, and accent copper tones — that lets the vibrant colors of Kashmiri art pop without competing for attention. The typography pairs a modern geometric sans-serif for UI elements with a refined serif for artist bios and descriptions, creating a gallery-like browsing experience.',
+      '### Impact and What Comes Next',
+      'Today, Artlor connects scenic local artwork with enthusiasts worldwide. More importantly, it gives Kashmiri artisans something they have never had: a direct digital storefront with global visibility. Every time an order comes through, it validates the core thesis — that geography should not limit talent, and age should not limit ambition.',
+      '&gt; Artlor was built to prove that geographic borders and age do not restrict your ability to build meaningful platforms. I am 14, I am from Kashmir, and I am just getting started.',
+      'Looking ahead, I am working on adding artist video profiles, an AR preview feature for wall art, and expanding the marketplace beyond Kashmir to include artisans from other underrepresented regions across South Asia. The mission remains the same: give every artist a fighting chance to reach the world. If you are an artisan, a buyer, or just someone who believes in this vision — I want to hear from you.'
     ]
   },
   {
@@ -145,7 +153,7 @@ export default function Blog() {
               className="block text-brand text-[12px] uppercase tracking-[0.08em] mb-10"
               style={{ fontFamily: "'Space Mono', monospace" }}
             >
-              (003) BLOG
+              (004) BLOG
             </span>
             <h2
               className="text-[#fafaf9]"
