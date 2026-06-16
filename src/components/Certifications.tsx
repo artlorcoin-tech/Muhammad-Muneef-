@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Award, ShieldAlert, BookOpen, GraduationCap, Play } from 'lucide-react';
+import { Award, BookOpen, GraduationCap, Play } from 'lucide-react';
 import { playSound } from '../lib/sound';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -143,7 +143,7 @@ export default function Certifications() {
           ref={cardsRef}
           className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-6"
         >
-          {credentials.map((cred, idx) => (
+          {credentials.map((cred) => (
             <div
               key={cred.title}
               onClick={() => playSound('click')}

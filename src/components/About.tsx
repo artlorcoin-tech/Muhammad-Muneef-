@@ -4,7 +4,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Terminal from './Terminal';
 import Dashboard from './Dashboard';
 import Timeline from './Timeline';
-import { Download, X, ExternalLink, Briefcase, GraduationCap, Code } from 'lucide-react';
+import { Download, X, ExternalLink } from 'lucide-react';
 import { playSound } from '../lib/sound';
 
 gsap.registerPlugin(ScrollTrigger);
