@@ -138,7 +138,7 @@ export default function Hero() {
       <div className="relative text-center px-6 max-w-4xl mx-auto">
         {/* SEO: Single h1 for the page — visually hidden, screen-reader accessible */}
         <h1 className="sr-only">
-          Muhammad Muneef — 14-Year-Old Tech Entrepreneur, Developer & Debater from Kashmir
+          Muhammad Muneef — Teen Tech Entrepreneur, Developer & Debater from Kashmir
         </h1>
 
         {/* First name with drip animation & scramble on hover */}

@@ -14,11 +14,11 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     question: 'Who is Muhammad Muneef?',
-    answer: 'Muhammad Muneef (commonly known as Muneef) is a 14-year-old tech entrepreneur, web developer, and school speaking championship winner from Kashmir, India. He is a student at Green Valley Educational Institute and the founder of two startups: Artlor (an online art marketplace) and Trust Finsure Accounting (a professional accounting services platform). He is also a 3-time MUN Best Delegate award winner.',
+    answer: 'Muhammad Muneef (commonly known as Muneef) is a teen tech entrepreneur, web developer, and school speaking championship winner from Kashmir, India. He is a student at Green Valley Educational Institute and the founder of two startups: Artlor (an online art marketplace) and Trust Finsure Accounting (a professional accounting services platform). He is also a 3-time MUN Best Delegate award winner.',
   },
   {
     question: 'What is Muneef known for?',
-    answer: 'Muneef is known for being one of the youngest tech entrepreneurs from Kashmir. At just 14 years old, he has founded two startups (Artlor and Trust Finsure Accounting), won 3 MUN Best Delegate awards, competed as a school debater, and builds professional websites using modern technologies like React, TypeScript, and Python.',
+    answer: 'Muneef is known for being one of the youngest tech entrepreneurs from Kashmir. As a teenager, he has founded two startups (Artlor and Trust Finsure Accounting), won 3 MUN Best Delegate awards, competed as a school debater, and builds professional websites using modern technologies like React, TypeScript, and Python.',
   },
   {
     question: 'What is Artlor?',
@@ -34,7 +34,7 @@ const faqData: FAQItem[] = [
   },
   {
     question: 'How old is Muneef?',
-    answer: 'Muhammad Muneef is 14 years old (born in 2012). Despite his young age, he has already founded two startups, won multiple debating awards, and built professional websites as a web developer.',
+    answer: 'Muhammad Muneef is a teenager (born in 2012). Despite his young age, he has already founded two startups, won multiple debating awards, and built professional websites as a web developer.',
   },
 ];
 

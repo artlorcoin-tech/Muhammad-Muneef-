@@ -50,7 +50,7 @@ export default function Terminal() {
     about: () => {
       printLines([
         'Muhammad Muneef:',
-        '  A 14-year-old technology entrepreneur, developer, and public speaker.',
+        '  A teen technology entrepreneur, developer, and public speaker.',
         '  Co-founder & Lead Developer of Artlor (online art marketplace) and',
         '  Trust Finsure Accounting (professional financial services).',
         '  Passionate about Web3, high-performance web systems, and UI/UX design.',
@@ -183,7 +183,7 @@ export default function Terminal() {
       } else if (arg.includes('age') || arg.includes('old')) {
         printLines([
           '🤖 AI Response:',
-          '  "I am 14 years old (born in 2012), balancing my secondary education',
+          '  "I am a teenager (born in 2012), balancing my secondary education',
           '   at GVEI with active software development and startup execution."',
         ], 'success');
       } else if (arg.includes('startup') || arg.includes('artlor') || arg.includes('finsure')) {

@@ -10,7 +10,7 @@ import { playSound } from '../lib/sound';
 gsap.registerPlugin(ScrollTrigger);
 
 const stats = [
-  { value: '14', label: 'Years Old' },
+  { value: 'Teen', label: 'Life Stage' },
   { value: 'GVEI', label: 'Green Valley Ed. Inst.' },
   { value: '2x', label: 'Startups Founded' },
   { value: '3x', label: 'MUN Best Delegate' },
@@ -169,7 +169,7 @@ export default function About() {
                 className="text-[#a8a29e] leading-[1.8]"
                 style={{ fontFamily: "'Inter', sans-serif", fontSize: '18px', fontWeight: 300 }}
               >
-                I&rsquo;m Muhammad Muneef, a 14-year-old tech entrepreneur and student at Green Valley Educational Institute from the scenic valleys of Kashmir. I&rsquo;m the founder of two ventures &mdash; Artlor, an online art marketplace, and Trust Finsure Accounting, a platform offering professional accounting services.
+                I&rsquo;m Muhammad Muneef, a teen tech entrepreneur and student at Green Valley Educational Institute from the scenic valleys of Kashmir. I&rsquo;m the founder of two ventures &mdash; Artlor, an online art marketplace, and Trust Finsure Accounting, a platform offering professional accounting services.
               </p>
               <p
                 ref={bodyRightRef}
@@ -289,7 +289,7 @@ export default function About() {
               <div className="space-y-2">
                 <h4 className="text-xs text-[#fafaf9] uppercase tracking-wider font-mono border-l-2 border-brand pl-2.5" style={{ fontFamily: "'Space Mono', monospace" }}>Profile Summary</h4>
                 <p className="text-sm text-[#a8a29e] leading-relaxed font-light" style={{ fontFamily: "'Inter', sans-serif" }}>
-                  Ambitious 14-year-old tech entrepreneur, full-stack developer, and school speaking championship winner based in Kashmir. Founder of Artlor (art marketplace) and Trust Finsure Accounting. Specializes in building modern component architectures with React, TypeScript, and Python backend microservices. Proven leadership in academic assemblies and three-time MUN Best Delegate winner.
+                  Ambitious teen tech entrepreneur, full-stack developer, and school speaking championship winner based in Kashmir. Founder of Artlor (art marketplace) and Trust Finsure Accounting. Specializes in building modern component architectures with React, TypeScript, and Python backend microservices. Proven leadership in academic assemblies and three-time MUN Best Delegate winner.
                 </p>
               </div>
 

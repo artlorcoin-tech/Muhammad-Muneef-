@@ -379,7 +379,7 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
                 <div>
                   <h4 className="text-[#fafaf9] text-[14px] font-bold tracking-wide">MUHAMMAD MUNEEF</h4>
                   <span className="text-brand text-[10px] uppercase font-bold tracking-widest" style={{ fontFamily: "'Space Mono', monospace" }}>
-                    FOUNDER // 14yo
+                    FOUNDER // TEENAGER
                   </span>
                 </div>
               </div>
@@ -410,7 +410,7 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
                       <strong>Muhammad Muneef</strong> is a young technology entrepreneur, developer, and student from Kashmir.
                     </p>
                     <p>
-                      At just 14 years old, he balances secondary academics at <strong>GVEI</strong> with running multiple business ventures.
+                      As a teenager, he balances secondary academics at <strong>GVEI</strong> with running multiple business ventures.
                     </p>
                     <p className="text-brand font-semibold">
                       &bull; Srinagar, Kashmir, IN
@@ -448,8 +448,8 @@ export default function SpotlightSearch({ isOpen, onClose }: SpotlightSearchProp
                 {profileTab === 'stats' && (
                   <div className="text-[11px] text-[#a8a29e] space-y-2.5 font-mono">
                     <div className="flex justify-between">
-                      <span>AGE:</span>
-                      <span className="text-[#fafaf9] font-bold">14 YEARS</span>
+                      <span>LIFE STAGE:</span>
+                      <span className="text-[#fafaf9] font-bold">TEENAGER</span>
                     </div>
                     <div className="flex justify-between">
                       <span>STARTUPS:</span>
