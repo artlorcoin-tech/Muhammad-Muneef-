@@ -86,7 +86,7 @@ export default function Terminal() {
       printLines([
         'Reach Out:',
         '  Email     : muhammadmuneef2928@gmail.com',
-        '  GitHub    : https://github.com/Muneef29',
+        '  GitHub    : https://github.com/MUHAMMADM29',
         '  LinkedIn  : https://linkedin.com/in/muhammad-muneef',
         '  Instagram : @m__un__ee_f',
       ]);

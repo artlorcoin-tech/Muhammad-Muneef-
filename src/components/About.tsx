@@ -280,7 +280,7 @@ export default function About() {
                 <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#a8a29e] font-mono" style={{ fontFamily: "'Space Mono', monospace" }}>
                   <div>Location: Kashmir, India</div>
                   <div>Email: muhammadmuneef2928@gmail.com</div>
-                  <div>GitHub: github.com/Muneef29</div>
+                  <div>GitHub: github.com/MUHAMMADM29</div>
                   <div>LinkedIn: linkedin.com/in/muhammad-muneef</div>
                 </div>
               </div>

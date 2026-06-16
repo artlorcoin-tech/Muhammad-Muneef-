@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const socialLinks = [
   { label: 'LINKEDIN', href: 'https://linkedin.com/in/muhammad-muneef' },
-  { label: 'GITHUB', href: 'https://github.com/Muneef29' },
+  { label: 'GITHUB', href: 'https://github.com/MUHAMMADM29' },
   { label: 'INSTAGRAM', href: 'https://instagram.com/m__un__ee_f' },
   { label: 'EMAIL', href: 'mailto:muhammadmuneef2928@gmail.com' },
 ];

@@ -104,9 +104,27 @@ function ProjectCard({ project, onEnter, onSelect }: ProjectCardProps) {
         >
           {project.description}
         </p>
-        <div className="mt-6 flex items-center gap-2 text-[#fafaf9] group-hover:text-brand transition-colors duration-300 text-[12px] font-bold uppercase tracking-[0.15em]" style={{ fontFamily: "'Space Mono', monospace" }}>
-          <span>OPEN CASE CONSOLE</span>
-          <span className="transform group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
+        <div className="mt-6 flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2 text-[#fafaf9] group-hover:text-brand transition-colors duration-300 text-[12px] font-bold uppercase tracking-[0.15em]" style={{ fontFamily: "'Space Mono', monospace" }}>
+            <span>OPEN CASE CONSOLE</span>
+            <span className="transform group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
+          </div>
+          {project.link && project.link !== '#' && (
+            <a
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[11px] font-bold uppercase tracking-[0.12em] transition-all duration-300 border border-brand/40 text-brand hover:bg-brand hover:text-[#0c0a09]"
+              style={{ fontFamily: "'Space Mono', monospace" }}
+            >
+              View live
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" className="inline-block">
+                <path d="M3.5 1.5H10.5V8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M10.5 1.5L1.5 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </a>
+          )}
         </div>
       </div>
     </div>
