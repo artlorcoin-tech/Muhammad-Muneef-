@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { playSound } from '../lib/sound';
+import { transmitSignal } from '../lib/supabase';
 import { Send, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -93,32 +94,30 @@ export default function Contact() {
     playSound('click');
 
     try {
-      const response = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          access_key: 'YOUR_ACCESS_KEY_HERE', // User should replace this with their actual key
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject || 'Direct Portfolio Inquiry',
-          message: formData.message,
-          from_name: 'Muhammad Muneef Portfolio',
-        }),
+      const result = await transmitSignal({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
       });
 
-      if (response.ok) {
+      if (result.success) {
         setStatus('success');
         playSound('success');
         localStorage.setItem('muneef_contact_last_sent', Date.now().toString());
         setSpamBlocked(true);
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        throw new Error('API submission failed.');
+        throw new Error(result.error || 'Supabase transmission failed.');
       }
     } catch (err) {
       setStatus('error');
       playSound('toggle');
-      setErrorMessage('Could not transmit message. Please send direct email instead.');
+      setErrorMessage(
+        err instanceof Error
+          ? `Transmission failed: ${err.message}`
+          : 'Could not transmit signal. Please send direct email instead.'
+      );
     }
   };
 
