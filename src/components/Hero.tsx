@@ -10,6 +10,7 @@ export default function Hero() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const taglineRef = useRef<HTMLParagraphElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+  const bgImageRef = useRef<HTMLDivElement>(null);
 
   // Scramble hooks for firstName and lastName
   const { displayText: firstName, scramble: scrambleFirst } = useTextScramble('MUHAMMAD', 1.4);
@@ -88,6 +89,17 @@ export default function Hero() {
       }, '-=0.4');
     }
 
+    // Background image fade and scale in
+    if (bgImageRef.current) {
+      gsap.set(bgImageRef.current, { opacity: 0, scale: 1.15 });
+      tl.to(bgImageRef.current, {
+        opacity: 0.22,
+        scale: 1,
+        duration: 2.5,
+        ease: 'power3.out',
+      }, '-=1.2');
+    }
+
     // Scroll indicator fade out on scroll
     const onScroll = () => {
       if (scrollIndicatorRef.current && window.scrollY > 100) {
@@ -134,6 +146,22 @@ export default function Hero() {
           background: 'radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(12,10,9,0.5) 100%)',
         }}
       />
+
+      {/* Ambient background profile picture of Muneef */}
+      <div 
+        ref={bgImageRef}
+        className="absolute right-0 bottom-0 top-0 w-full md:w-[45%] opacity-0 pointer-events-none select-none z-0 overflow-hidden"
+        style={{ mixBlendMode: 'screen' }}
+        aria-hidden="true"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0c0a09] via-[#0c0a09]/60 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0c0a09] via-transparent to-[#0c0a09] z-10" />
+        <img
+          src="/images/muneef-profile.jpg"
+          alt=""
+          className="w-full h-full object-cover object-[center_30%] select-none pointer-events-none filter grayscale contrast-[1.15] brightness-[0.75]"
+        />
+      </div>
 
       <div className="relative text-center px-6 max-w-4xl mx-auto">
         {/* SEO: Single h1 for the page — visually hidden, screen-reader accessible */}

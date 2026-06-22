@@ -20,6 +20,7 @@ COMMENT ON TABLE contact_signals IS 'Stores contact form submissions from the po
 ALTER TABLE contact_signals ENABLE ROW LEVEL SECURITY;
 
 -- 4. Allow anonymous visitors to INSERT (submit the form)
+DROP POLICY IF EXISTS "Allow anonymous inserts" ON contact_signals;
 CREATE POLICY "Allow anonymous inserts"
   ON contact_signals
   FOR INSERT
@@ -27,6 +28,7 @@ CREATE POLICY "Allow anonymous inserts"
   WITH CHECK (true);
 
 -- 5. Only authenticated / service-role can READ the messages
+DROP POLICY IF EXISTS "Allow authenticated reads" ON contact_signals;
 CREATE POLICY "Allow authenticated reads"
   ON contact_signals
   FOR SELECT

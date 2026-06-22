@@ -113,10 +113,17 @@ export default function Navigation({ onSearchOpen }: NavigationProps) {
             href="#"
             onClick={handleLogoClick}
             onMouseEnter={() => playSound('hover')}
-            className="text-[#fafaf9] text-[14px] font-bold uppercase tracking-[0.15em] flex items-center gap-2 group interactive-item"
+            className="text-[#fafaf9] text-[14px] font-bold uppercase tracking-[0.15em] flex items-center gap-3 group interactive-item"
             style={{ fontFamily: "'Space Mono', monospace" }}
           >
-            <span className="text-brand font-extrabold group-hover:rotate-180 transition-transform duration-500 inline-block">&lt;/&gt;</span> MUNEEF
+            <div className="relative w-7 h-7 rounded-full overflow-hidden border border-brand/30 group-hover:border-brand transition-all duration-500 shadow-sm shadow-brand/10">
+              <img 
+                src="/images/muneef-profile.jpg" 
+                alt="Muneef" 
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+            </div>
+            <span>MUNEEF</span>
           </a>
 
           {/* Right Area: Links & Controls */}
